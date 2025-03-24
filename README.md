@@ -1,6 +1,8 @@
-# 个人学术主页
+# Personal Academic Website | 个人学术主页
 
-这是一个简洁现代的个人学术主页模板，使用HTML、CSS和JavaScript构建。
+A responsive academic profile website with English and Chinese language support.
+
+支持中英文切换的响应式个人学术主页。
 
 ## 项目结构
 
@@ -18,13 +20,43 @@
         └── research2.jpg
 ```
 
-## 功能特点
+## 功能特点 | Features
 
-- 响应式设计，适配各种设备
-- 模块化结构，易于维护和扩展
-- 现代化的视觉效果和交互
-- 支持动态加载内容
-- 平滑滚动和渐入动画效果
+- 响应式设计，适配各种设备尺寸 | Responsive design for various device sizes
+- 中英文语言切换 | English and Chinese language switching
+- 研究项目标签筛选 | Research project tag filtering
+- 平滑滚动和动画效果 | Smooth scrolling and animations
+- 现代化的UI设计 | Modern UI design
+
+## 技术栈 | Tech Stack
+
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+- Font Awesome Icons
+
+## 本地运行 | Local Development
+
+1. 克隆仓库 | Clone the repository
+```bash
+git clone https://github.com/yourusername/academic-profile.git
+```
+
+2. 使用本地服务器打开项目 | Open with a local server
+   - 可以使用 Visual Studio Code 的 Live Server 插件
+   - 或者使用 Python 的简单 HTTP 服务器：
+```bash
+python -m http.server 8000
+```
+
+3. 在浏览器中访问 | Visit in browser
+```
+http://localhost:8000
+```
+
+## 许可证 | License
+
+MIT License
 
 ## 如何使用
 
