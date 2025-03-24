@@ -224,23 +224,34 @@ body {
 }
 
 .profile-image {
-    width: 100%;  /* 确保容器占满父元素宽度 */
-    text-align: center;
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .profile-image img {
     width: 100%;
-    max-width: 100%;  /* 让图片宽度与容器一致 */
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    border: 3px solid white;
-    transition: transform 0.3s ease;
-    aspect-ratio: 1;  /* 保持图片为正方形 */
-    object-fit: cover;  /* 确保图片填充整个区域 */
+    height: auto;
+    display: block;
+    border-radius: 10px;
 }
 
-.profile-image img:hover {
-    transform: scale(1.02);
+.profile-image .surface {
+    position: relative;
+    z-index: 2;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.profile-image .hide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.profile-image:hover .surface {
+    opacity: 0;
 }
 
 .about-text h3 {
