@@ -235,12 +235,13 @@ body {
     height: auto;
     display: block;
     border-radius: 10px;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .profile-image .surface {
     position: relative;
     z-index: 2;
-    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
 }
 
 .profile-image .hide {
@@ -248,10 +249,15 @@ body {
     top: 0;
     left: 0;
     z-index: 1;
+    opacity: 0;
 }
 
 .profile-image:hover .surface {
     opacity: 0;
+}
+
+.profile-image:hover .hide {
+    opacity: 1;
 }
 
 .about-text h3 {
