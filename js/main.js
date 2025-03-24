@@ -1,5 +1,9 @@
 // 滚动动画
 document.addEventListener('DOMContentLoaded', function() {
+    // 初始化工作时间显示
+    const workTimeSpan = document.querySelector('.work-time span');
+    workTimeSpan.textContent = '9:00 AM - 9:00 PM ET';
+    
     // 语言切换功能初始化
     initializeLanguageSwitch();
     
