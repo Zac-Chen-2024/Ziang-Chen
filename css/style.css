@@ -228,27 +228,25 @@ body {
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
+    aspect-ratio: 1;  /* 保持正方形比例 */
 }
 
 .profile-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
+    object-fit: cover;
     border-radius: 10px;
     transition: opacity 0.3s ease-in-out;
 }
 
 .profile-image .surface {
-    position: relative;
-    z-index: 2;
     opacity: 1;
 }
 
 .profile-image .hide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
     opacity: 0;
 }
 
