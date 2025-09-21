@@ -3,214 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ziang Chen - Academic Profile</title>
+    <title>Ziang Chen - PhD Student</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="header">
-        <nav class="nav-container">
-            <div class="nav-left">
-                <div class="logo">Ziang Chen</div>
-                <!-- <div class="lang-switch">
-                    <button id="langToggle">中文</button>
-                </div> -->
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-text">Ziang Chen</span>
+                <span class="brand-subtitle">PhD Student</span>
             </div>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#research">Research</a></li>
+            <ul class="nav-menu">
+                <li><a href="#hero" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#research" class="nav-link">Research</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-        </nav>
-    </header>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
 
+    <!-- 主页面 -->
     <main>
-        <section id="about" class="about-section">
-            <div class="container">
-                <h1>Ziang Chen</h1>
-                <div class="about-content">
-                    <div class="left-column">
-                        <div class="profile-image">
-                            <img src="assets/images/profile.jpg" alt="Ziang Chen" class="surface">
-                            <img src="assets/images/hide.jpg" alt="Ziang Chen" class="hide">
-                        </div>
-                        <div class="self-intro">
-                            <h3>About Me</h3>
-                            <div class="intro-content">
-                                <p>I am a graduate student in Computer Science at Stony Brook University, focusing on human-computer interaction based on large language models.</p>
-                                <div class="research-interests">
-                                    <h4>Research Interests</h4>
-                                    <ul>
-                                        <li>Human-Computer Interaction</li>
-                                        <li>Large Language Model Applications</li>
-                                    </ul>
-                                </div>
-                            </div>
+        <!-- Hero 区域 -->
+        <section id="hero" class="hero-section">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <span class="hero-greeting">Hello, I'm</span>
+                        <h1 class="hero-name">Ziang Chen</h1>
+                        <p class="hero-title">PhD Student in Computer Science</p>
+                        <p class="hero-description">
+                            Passionate about human-computer interaction and large language model applications. 
+                            Currently pursuing my doctoral degree at Stony Brook University.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#research" class="btn btn-primary">View Research</a>
+                            <a href="#contact" class="btn btn-secondary">Get in Touch</a>
                         </div>
                     </div>
-                    <div class="about-text">
-                        <h3>Contact</h3>
-                        <div class="contact-info">
-                            <div class="contact-item">
-                                <i class="fas fa-envelope"></i>
-                                <a href="mailto:ziang.chen@stonybrook.edu">ziang.chen@stonybrook.edu</a>
-                            </div>
-                            <div class="contact-item">
-                                <i class="fas fa-phone"></i>
-                                <a href="tel:+19295447335">+1 (929) 544-7335</a>
-                            </div>
-                            <div class="contact-item work-time">
-                                <i class="fas fa-clock"></i>
-                                <span></span>
-                            </div>
+                    <div class="hero-image">
+                        <div class="image-container">
+                            <img src="assets/images/profile.jpg" alt="Ziang Chen" class="profile-img">
+                            <div class="image-overlay"></div>
                         </div>
-
-                        <h3>Education</h3>
-                        <div class="education-item">
-                            <div class="education-info">
-                                <strong>Stony Brook University</strong>
-                                <p>M.S. in Computer Science (Current)</p>
+                        <div class="floating-elements">
+                            <div class="floating-card">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>PhD Student</span>
                             </div>
-                            <div class="education-gpa">
-                                GPA: 3.890/4.0
+                            <div class="floating-card">
+                                <i class="fas fa-brain"></i>
+                                <span>HCI Research</span>
                             </div>
-                        </div>
-                        <div class="education-item">
-                            <div class="education-info">
-                                <strong>Northeastern University (China)</strong>
-                                <p>B.E. in Computer Science and Technology (July 2024)</p>
-                            </div>
-                        </div>
-                        
-                        <h3>Advisor</h3>
-                        <div class="advisor-info">
-                            <p><strong>Xiaojun Bi</strong> Associate Professor</p>
-                            <p>Stony Brook University</p>
-                        </div>
-                        
-                        <h3>Research Experience</h3>
-                        <div class="experience-item">
-                            <p><strong>HCI Lab, Stony Brook University</strong></p>
-                            <p>Lab Member (Jan 2024 - Present)</p>
-                            <ul>
-                                <li>Web-based demonstration development for Tap&Say error correction LLM</li>
-                                <!-- <li>Development of LLM-based immigration legal assistant (Collaboration with Yazheng Chen, advised by Xiaojun Bi and Xianfeng Gu)</li> -->
-                            </ul>
-                        </div>
-                        <div class="experience-item">
-                            <p><strong>Data Science and Computer Vision Lab, Northeastern University</strong></p>
-                            <p>Outstanding Undergraduate Assistant (Nov 2020 - June 2024)</p>
-                            <ul>
-                                <li>Participated in heart disease feature data processing research in collaboration with local medical institutions</li>
-                                <li>Development of computer vision-based helmet wearing detection system</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- About 区域 -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>About Me</h2>
+                    <p>Get to know more about my background and journey</p>
+                </div>
+                
+                <div class="about-grid">
+                    <!-- 个人信息卡片 -->
+                    <div class="info-card">
+                        <div class="card-header">
+                            <i class="fas fa-user"></i>
+                            <h3>Personal Info</h3>
+                        </div>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <span class="label">Email</span>
+                                    <a href="mailto:ziang.chen@stonybrook.edu">ziang.chen@stonybrook.edu</a>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <span class="label">Phone</span>
+                                    <a href="tel:+19295447335">+1 (929) 544-7335</a>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <span class="label">Location</span>
+                                    <span>Stony Brook, NY</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 教育背景 -->
+                    <div class="education-card">
+                        <div class="card-header">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3>Education</h3>
+                        </div>
+                        <div class="education-list">
+                            <div class="education-item">
+                                <div class="edu-period">Current</div>
+                                <div class="edu-content">
+                                    <h4>Ph.D. in Computer Science</h4>
+                                    <p>Stony Brook University</p>
+                                    <div class="gpa">GPA: 3.890/4.0</div>
+                                </div>
+                            </div>
+                            <div class="education-item">
+                                <div class="edu-period">2024</div>
+                                <div class="edu-content">
+                                    <h4>B.E. in Computer Science</h4>
+                                    <p>Northeastern University (China)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 研究兴趣 -->
+                    <div class="interests-card">
+                        <div class="card-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Research Interests</h3>
+                        </div>
+                        <div class="interests-grid">
+                            <div class="interest-item">
+                                <i class="fas fa-desktop"></i>
+                                <span>Human-Computer Interaction</span>
+                            </div>
+                            <div class="interest-item">
+                                <i class="fas fa-brain"></i>
+                                <span>Large Language Models</span>
+                            </div>
+                            <div class="interest-item">
+                                <i class="fas fa-microphone"></i>
+                                <span>Speech Recognition</span>
+                            </div>
+                            <div class="interest-item">
+                                <i class="fas fa-balance-scale"></i>
+                                <span>Legal Technology</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 导师信息 -->
+                    <div class="advisor-card">
+                        <div class="card-header">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Academic Advisor</h3>
+                        </div>
+                        <div class="advisor-info">
+                            <h4>Xiaojun Bi</h4>
+                            <p>Associate Professor</p>
+                            <p>Stony Brook University</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research 区域 -->
         <section id="research" class="research-section">
             <div class="container">
-                <h2>Research Projects</h2>
-                <div class="filter-tags">
-                    <div class="filter-tag" data-tag="LLM">LLM</div>
-                    <div class="filter-tag" data-tag="HCI">HCI</div>
-                    <div class="filter-tag" data-tag="Speech Recognition">Speech Recognition</div>
-                    <div class="filter-tag" data-tag="Legal Tech">Legal Tech</div>
-                    <div class="filter-tag" data-tag="NLP">NLP</div>
-                    <div class="filter-tag" data-tag="Data Analysis">Data Analysis</div>
-                    <div class="filter-tag" data-tag="Healthcare">Healthcare</div>
-                    <div class="filter-tag" data-tag="Machine Learning">Machine Learning</div>
-                    <div class="filter-tag" data-tag="Computer Vision">Computer Vision</div>
-                    <div class="filter-tag" data-tag="Deep Learning">Deep Learning</div>
-                    <div class="filter-tag" data-tag="Safety Monitoring">Safety Monitoring</div>
+                <div class="section-header">
+                    <h2>Research Projects</h2>
+                    <p>Explore my latest research in HCI and machine learning</p>
                 </div>
-                <div class="research-grid">
-                    <div class="research-card">
-                        <div class="research-image tap-and-say">
-                            <!-- Background color instead of image -->
-                        </div>
-                        <div class="research-content">
-                            <h3>Tap&Say: LLM-based Speech Error Correction Demo</h3>
-                            <p class="research-date">Jan 2024 - Present</p>
-                            <div class="research-description">
-                                <p>Originally created by Maozheng, I am responsible for developing the web-based demonstration that enables speech error correction through simple interactions using LLM suggestions.</p>
-                                <ul>
-                                    <li>Speech error correction through simple interactions</li>
-                                    <li>LLM-powered correction suggestions</li> 
-                                </ul>
-                            </div>
-                            <div class="research-tags">
-                                <span class="tag">LLM</span>
-                                <span class="tag">Speech Recognition</span>
-                                <span class="tag">HCI</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="research-card hidden">
-                        <div class="research-image legal-assistant">
-                            <!-- Background color instead of image -->
-                        </div>
-                        <div class="research-content">
-                            <h3>LLM-based Immigration Legal Assistant</h3>
-                            <p class="research-date">Feb 2024 - Present</p>
-                            <div class="research-description">
-                                <p>Development of an intelligent legal consultation system providing accurate and timely legal advice for immigrants.</p>
-                                <ul>
-                                    <li>Multilingual legal document understanding</li>
-                                    <li>Personalized legal advice generation</li>
-                                </ul>
-                            </div>
-                            <div class="research-tags">
-                                <span class="tag">LLM</span>
-                                <span class="tag">Legal Tech</span>
-                                <span class="tag">NLP</span>
-                            </div>
-                        </div>
+                <!-- 筛选标签 -->
+                <div class="filter-container">
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">All Projects</button>
+                        <button class="filter-btn" data-filter="llm">LLM</button>
+                        <button class="filter-btn" data-filter="hci">HCI</button>
+                        <button class="filter-btn" data-filter="speech">Speech Recognition</button>
                     </div>
+                </div>
 
-                    <div class="research-card hidden">
-                        <div class="research-image medical-analysis">
-                            <!-- Background color instead of image -->
-                        </div>
-                        <div class="research-content">
-                            <h3>Heart Disease Feature Data Analysis</h3>
-                            <p class="research-date">June 2023 - Dec 2023</p>
-                            <div class="research-description">
-                                <p>Collaborated with medical institutions to analyze clinical data of heart disease patients.</p>
-                                <ul>
-                                    <li>Medical data preprocessing and analysis</li>
-                                    <li>Feature extraction and risk prediction</li>
-                                </ul>
-                            </div>
-                            <div class="research-tags">
-                                <span class="tag">Data Analysis</span>
-                                <span class="tag">Healthcare</span>
-                                <span class="tag">Machine Learning</span>
+                <!-- 项目网格 -->
+                <div class="projects-grid">
+                    <article class="project-card" data-category="llm hci speech">
+                        <div class="project-image">
+                            <div class="project-overlay">
+                                <div class="project-tags">
+                                    <span class="tag">LLM</span>
+                                    <span class="tag">HCI</span>
+                                    <span class="tag">Speech Recognition</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="project-content">
+                            <div class="project-meta">
+                                <span class="project-date">Jan 2024 - Present</span>
+                                <span class="project-status">Ongoing</span>
+                            </div>
+                            <h3>Tap&Say: LLM-based Speech Error Correction</h3>
+                            <p>Development of a web-based demonstration that enables speech error correction through simple interactions using LLM suggestions. Originally created by Maozheng, focusing on user experience and interface design.</p>
+                            <ul class="project-highlights">
+                                <li>Speech error correction through intuitive interactions</li>
+                                <li>LLM-powered intelligent suggestions</li>
+                                <li>Real-time feedback and corrections</li>
+                            </ul>
+                        </div>
+                    </article>
 
-                    <div class="research-card hidden">
-                        <div class="research-image helmet-detection">
-                            <!-- Background color instead of image -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact 区域 -->
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Get In Touch</h2>
+                    <p>Feel free to reach out for collaborations or just to say hello</p>
+                </div>
+                
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="contact-card">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h3>Email Me</h3>
+                            <p>ziang.chen@stonybrook.edu</p>
+                            <a href="mailto:ziang.chen@stonybrook.edu" class="contact-btn">Send Email</a>
                         </div>
-                        <div class="research-content">
-                            <h3>Computer Vision-based Helmet Detection</h3>
-                            <p class="research-date">Mar 2023 - Sep 2023</p>
-                            <div class="research-description">
-                                <p>Development of a real-time helmet wearing detection system to improve construction site safety management.</p>
-                                <ul>
-                                    <li>Object detection and classification</li>
-                                    <li>Real-time video stream processing</li>
-                                </ul>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
                             </div>
-                            <div class="research-tags">
-                                <span class="tag">Computer Vision</span>
-                                <span class="tag">Deep Learning</span>
-                                <span class="tag">Safety Monitoring</span>
+                            <h3>Call Me</h3>
+                            <p>+1 (929) 544-7335</p>
+                            <a href="tel:+19295447335" class="contact-btn">Call Now</a>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
                             </div>
+                            <h3>Work Hours</h3>
+                            <p>9:00 AM - 9:00 PM ET</p>
+                            <span class="contact-note">Monday - Friday</span>
                         </div>
                     </div>
                 </div>
@@ -218,11 +271,31 @@
         </section>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>Have a good day!</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Ziang Chen</h3>
+                    <p>PhD Student in Computer Science</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#hero">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#research">Research</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ziang Chen. Have a good day!</p>
+            </div>
         </div>
     </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script src="js/main.js"></script>
 </body>
