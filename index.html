@@ -182,7 +182,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .badge.b1 { left: -18px; top: 26px; background: var(--leaf); transform: rotate(-4deg); }
 .badge.b2 { right: -14px; bottom: 64px; background: var(--apricot); transform: rotate(3deg); }
 .reach { margin-top: 6px; font: 600 16px/1.4 var(--body); color: var(--moss); }
-.reach a { color: var(--ink); }
+.reach a { color: var(--ink); font-weight: 800; text-decoration-color: var(--moss); }
 .mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .mail-row code { font: 700 14px/1.4 var(--mono); user-select: all; }
 .copy {
@@ -314,7 +314,7 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 .exp b { display: block; margin-top: 4px; font: 800 17px/1.3 var(--body); }
 .exp .org { display: block; margin-top: 2px; font-size: 15px; font-weight: 500; }
 .exp .with { display: block; margin-top: 2px; font-size: 14px; color: var(--moss); }
-.exp .with a { color: var(--moss); }
+.exp .with a { color: var(--ink); font-weight: 800; text-decoration-color: var(--moss); }
 /* 列表之后的空白：斜纹表示“还有位置”，不放占位文字 */
 .exp ol::after {
     content: ""; flex: 1; min-height: 24px;
@@ -437,6 +437,7 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 .contact .mail-row code { font-size: 16px; }
 .elsewhere { list-style: none; display: grid; gap: 12px; }
 .contact .mail-row { margin-top: 18px; }
+.contact .topics { margin-top: 10px; font: 700 15px/1.4 var(--mono); }
 .elsewhere a {
     display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; padding: 0 14px;
     border: var(--b); background: var(--mist); color: var(--ink); text-decoration: none; font-weight: 800;
@@ -714,7 +715,8 @@ body.calm .btn, body.calm .mini { transition: none; }
         <div class="sec-head"><h2 id="contact-h">Contact</h2></div>
         <div class="card contact">
             <div>
-                <h3>Let’s talk about research, interfaces, or songs.</h3>
+                <h3>Feel free to chat with me.</h3>
+                <p class="topics">Collaboration · HCI · Music · or any other topic</p>
                 <p class="mail-row"><code>ziang.chen@stonybrook.edu</code><button class="copy" type="button" data-copy="ziang.chen@stonybrook.edu">Copy</button></p>
             </div>
             <div>
