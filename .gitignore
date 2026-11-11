@@ -31,3 +31,11 @@ pids
 .env.*.local
 
 Thumbs.db 
+# 原始音频母带（WAV 太大，不进仓库；网站用 assets/music/ 里的 AAC）
+/music/
+
+# 设计原型与素材原图（不上线）
+/prototypes/
+/pic/
+/fa448b64ee1c44db79036e92a36b0262.jpg
+/b3119313b07eca806538760d457980dda144ac34259c.png

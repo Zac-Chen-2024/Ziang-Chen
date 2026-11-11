@@ -1,302 +1,1101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ziang Chen - PhD Student</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d9ecdc">
+<title>Ziang Chen · HCI Researcher</title>
+<meta name="description" content="Ziang Chen is a PhD candidate in Computer Science at Stony Brook University working on multimodal input for human–AI interaction, and a music producer and singer.">
+<meta property="og:title" content="Ziang Chen · HCI Researcher">
+<meta property="og:description" content="PhD candidate in Computer Science at Stony Brook University. HCI · LLM · Multimodal.">
+<meta property="og:image" content="assets/images/ziang-platform.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;800&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/* 第三轮：新野兽派 × 简历。信息按倒金字塔排列（身份 → 研究 → 教育 → 音乐 → 联系），
+   音乐用两级播放器：常驻迷你条（可再缩成一颗按钮）+ 音乐区完整磁带机。
+   色彩沿用 DESIGN-PRINCIPLES.md 的 OKLCH 绿色阶，60-30-10。 */
+:root {
+    --paper: #f3f8ee;        /* oklch(97.2% .014 128) 卡片底 */
+    --mist: #d9ecdc;         /* oklch(92.5% .030 150) 页面底 */
+    --sage: #a4c8ad;         /* oklch(80% .055 152) */
+    --leaf: #429c5a;         /* oklch(62% .13 150) 图形、主按钮底（配 ink 字 5.4:1） */
+    --moss: #236b3f;         /* oklch(47% .10 153) 浅底上的绿色文字 6.0:1 */
+    --forest: #11422c;       /* oklch(34% .065 160) */
+    --pine: #082419;         /* oklch(23.5% .04 165) */
+    --ink: #09140f;          /* oklch(18% .02 165) 描边、投影、正文 */
+    --apricot: #f4a254;      /* oklch(78% .135 62) 唯一暖色 */
+    --tape: #3a2b1f;
+    --display: 'Archivo Black', 'Noto Sans SC', 'Arial Black', Impact, sans-serif;
+    --body: 'Archivo', 'Noto Sans SC', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'Space Mono', 'Noto Sans SC', ui-monospace, Menlo, monospace;
+    --b: 3px solid var(--ink);
+    --sh: 6px 6px 0 var(--ink);
+    --nav-h: 64px;
+    color-scheme: light;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--mist); scroll-padding-top: calc(var(--nav-h) + 16px); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+    background-color: var(--mist);
+    background-image: radial-gradient(var(--sage) 1.2px, transparent 1.6px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font: 400 16px/1.6 var(--body);
+    padding-bottom: 120px;
+}
+body.dragging { user-select: none; -webkit-user-select: none; }
+button, input { font: inherit; color: inherit; touch-action: manipulation; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+a { color: var(--moss); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+a:hover { color: var(--ink); }
+:focus-visible { outline: 3px solid var(--moss); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--paper); border: var(--b); padding: 10px 14px; color: var(--ink); }
+.skip:focus { top: calc(10px + env(safe-area-inset-top, 0px)); }
+
+.wrap {
+    max-width: 1120px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+    min-height: 48px; min-width: 48px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--paper); color: var(--ink); border: var(--b); box-shadow: 4px 4px 0 var(--ink);
+    padding: 10px 18px; font: 800 15px/1 var(--body); text-decoration: none;
+    transition: transform .08s ease-out, box-shadow .08s ease-out;
+}
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); color: var(--ink); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--ink); }
+.btn.primary { background: var(--leaf); }
+.btn.dark { background: var(--forest); color: var(--paper); }
+.btn.dark:hover { color: var(--paper); }
+.btn.sq { padding: 0; width: 48px; font-size: 18px; }
+.btn[aria-pressed="true"] { background: var(--forest); color: var(--paper); transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* ---------- 顶栏：粘性导航，当前分区高亮 ---------- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 41; background: var(--paper); }
+.nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+    background: var(--paper); border-bottom: var(--b);
+}
+.nav .wrap { display: flex; align-items: center; gap: 16px; min-height: var(--nav-h); }
+.brand { font: 400 20px/1 var(--display); color: var(--ink); text-decoration: none; white-space: nowrap; }
+.nav ul { display: flex; gap: 4px; list-style: none; margin-left: auto; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.nav ul::-webkit-scrollbar { display: none; }
+.nav li a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px;
+    font: 700 14px/1 var(--mono); color: var(--ink); text-decoration: none; border: 3px solid transparent;
+}
+.nav li a:hover { border-color: var(--ink); }
+.nav li a[aria-current="true"] { background: var(--leaf); border-color: var(--ink); }
+
+/* ---------- 首屏：简历抬头 ---------- */
+.hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 88px); row-gap: 32px; padding-block: 48px 8px; align-items: stretch; }
+.hero-main { position: relative; display: flex; flex-direction: column; min-width: 0; max-width: 620px; }
+.hero-main .cta { margin-top: auto; padding-top: 24px; }
+.hero h1 {
+    align-self: flex-start;
+    justify-self: start; display: inline-block;
+    background: var(--forest); color: var(--paper);
+    border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
+    padding: 8px 20px 12px; transform: rotate(-1.5deg);
+    font: 400 clamp(52px, 9vw, 116px)/0.9 var(--display); letter-spacing: -0.03em;
+    max-width: 100%;
+}
+.hero h1 span { color: var(--apricot); }
+.hero h1.bump { animation: bump .22s ease-out; }
+@keyframes bump { 0% { transform: rotate(-1.5deg) scale(1.02); } 100% { transform: rotate(-1.5deg) scale(1); } }
+.role { margin-top: 30px; font: 800 clamp(22px, 2.6vw, 32px)/1.15 var(--body); letter-spacing: -0.01em; white-space: nowrap; }
+@media (max-width: 520px) { .role { white-space: normal; } }
+/* 简介三层：导语（一句话立论）→ 正文（做什么、看重什么）→ 旁注（音乐身份）。
+   所有文字块共用左栏这一条右边界，并两端对齐：栏宽约 70 字符 + 自动断字，词距才不会被拉得太开 */
+.lead, .summary, .aside-note span { text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; }
+.lead { margin-top: 22px; font: 600 clamp(18px, 1.6vw, 20px)/1.45 var(--body); }
+.summary { margin-top: 12px; font-size: 17px; line-height: 1.6; }
+.aside-note {
+    display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; padding-top: 14px;
+    border-top: 2px dashed var(--sage); font-size: 15px; line-height: 1.5; color: var(--moss);
+}
+.aside-note svg { flex: none; margin-top: 3px; color: var(--ink); }
+.aside-note span { flex: 1; min-width: 0; }
+.summary strong { background: linear-gradient(transparent 58%, var(--sage) 58%); font-weight: 600; }
+.cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+
+/* 照片海报：与名字卡反向倾斜，形成对角线构图；关键身份做成贴纸压在照片角上 */
+.card { position: relative; background: var(--paper); border: var(--b); box-shadow: var(--sh); min-width: 0; }
+.poster { position: relative; justify-self: end; align-self: start; width: 100%; max-width: 440px; margin-top: 0; }
+.poster figure {
+    position: relative; background: var(--paper); border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
+    padding: 12px 12px 0; transform: rotate(1.5deg);
+}
+.poster .photo { aspect-ratio: 4 / 5; overflow: hidden; border: var(--b); background: var(--pine); }
+.poster img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+.poster figcaption { justify-content: space-between; gap: 8px; padding: 12px 2px 14px; }
+.poster figcaption code { font-size: 15px; overflow-wrap: anywhere; }
+.badge {
+    position: absolute; z-index: 2; border: var(--b); box-shadow: 4px 4px 0 var(--ink);
+    padding: 8px 12px; font: 800 14px/1.2 var(--body);
+}
+.badge small { display: block; font: 700 11px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.badge.b1 { left: -18px; top: 26px; background: var(--leaf); transform: rotate(-4deg); }
+.badge.b2 { right: -14px; bottom: 64px; background: var(--apricot); transform: rotate(3deg); }
+.reach { margin-top: 6px; font: 600 16px/1.4 var(--body); color: var(--moss); }
+.reach a { color: var(--ink); }
+.mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.mail-row code { font: 700 14px/1.4 var(--mono); user-select: all; }
+.copy {
+    min-height: 32px; padding: 2px 10px; border: 2px solid var(--ink); background: var(--paper);
+    font: 700 12px/1 var(--mono); box-shadow: 2px 2px 0 var(--ink);
+}
+.copy:active { transform: translate(2px, 2px); box-shadow: none; }
+
+/* ---------- 分区标题 ---------- */
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin: 72px 0 22px; }
+.sec-head h2 {
+    font: 400 clamp(30px, 5vw, 52px)/1 var(--display); text-transform: uppercase;
+    background: var(--ink); color: var(--mist); padding: 6px 14px 8px;
+}
+.sec-head p { font: 700 13px/1.4 var(--mono); color: var(--moss); }
+
+/* ---------- 研究 + 侧栏 ---------- */
+.cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 28px; align-items: stretch; }
+.tag { border: 2px solid var(--ink); padding: 3px 8px; font: 700 12px/1.2 var(--mono); background: var(--mist); }
+.tag.live { background: var(--leaf); }
+
+/* 项目：横向滑动的竖卡（标题 + 示意图 + 一句描述），下方一条线 + 点作为滑动轴 */
+.projects { position: relative; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+/* 竖卡固定 1:2；rail 不拉伸卡片，让 aspect-ratio 生效 */
+.rail {
+    display: flex; align-items: flex-start; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    padding: 0 10px 12px 0; margin: 0; scrollbar-width: none;
+}
+/* 左右边缘的分隔：还有内容可滑时，那一侧出现一条墨线 + 渐隐，像卡片滑进了窗框 */
+.rail-box { position: relative; }
+.rail-box::before, .rail-box::after {
+    content: ""; position: absolute; top: 0; bottom: 12px; width: 36px; z-index: 2; pointer-events: none;
+    opacity: 0; transition: opacity .2s ease;
+}
+.rail-box::before { left: 0; border-left: 3px solid var(--ink); background: linear-gradient(to right, var(--mist), rgba(217, 236, 220, 0)); }
+.rail-box::after { right: 0; border-right: 3px solid var(--ink); background: linear-gradient(to left, var(--mist), rgba(217, 236, 220, 0)); }
+.rail-box.more-left::before, .rail-box.more-right::after { opacity: 1; }
+body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
+.rail::-webkit-scrollbar { display: none; }
+.rail:focus-visible { outline-offset: -2px; }
+/* 尾部留白：让最后一张卡也能滚到最左，这样每个点对应一个确定的位置 */
+.rail::after { content: ""; flex: 0 0 calc(100% - clamp(220px, 34%, 260px) - 20px); }
+.pcard {
+    position: relative; flex: 0 0 clamp(220px, 34%, 260px); aspect-ratio: 1 / 2; scroll-snap-align: start;
+    display: flex; flex-direction: column; gap: 12px; padding: 14px;
+    background: var(--paper); border: var(--b); box-shadow: var(--sh);
+}
+.pcard h3 { font: 800 21px/1.2 var(--body); text-wrap: balance; padding-right: 8px; }
+/* 卡片自上而下：图（Arbor 比例 1400:656，完整放入）→ 标题 → 介绍 → 底部标签 */
+.pcard .fig { position: relative; flex: none; width: 100%; aspect-ratio: 1400 / 656; background: #fff; border: var(--b); overflow: hidden; }
+.pcard .fig img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.pcard p { font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+/* 占位卡：虚线、无阴影，内容都写 Coming soon */
+.pcard.soon { background: transparent; border-style: dashed; box-shadow: none; color: var(--moss); }
+.pcard.soon .fig { border-style: dashed; background: transparent; display: grid; place-items: center; font: 400 18px/1 var(--display); text-transform: uppercase; color: var(--sage); }
+.pcard.soon .tags span { border-style: dashed; background: transparent; color: var(--moss); }
+.pcard .tags {
+    --tag-h: 25px;
+    margin-top: auto; flex: none; height: calc(3 * var(--tag-h) + 2 * 6px + 14px); overflow: hidden;
+    display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; padding-top: 12px; border-top: 2px dashed var(--sage);
+}
+.pcard .tags span { display: inline-flex; align-items: center; height: var(--tag-h); border: 2px solid var(--ink); padding: 0 8px; font: 700 12px/1 var(--mono); background: var(--mist); }
+
+/* 滑动轴：← 线上的点 → ；拖动线即滚动卡片 */
+.scrub { display: flex; align-items: center; gap: 12px; }
+.scrub .btn { min-height: 44px; min-width: 44px; width: 44px; padding: 0; box-shadow: 3px 3px 0 var(--ink); flex: none; }
+.scrub .btn:disabled { opacity: .4; cursor: default; transform: none; }
+.line { position: relative; flex: 1; height: 44px; cursor: pointer; touch-action: none; }
+.line::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; background: var(--ink); transform: translateY(-50%); }
+.line .fill { position: absolute; left: 0; top: 50%; height: 7px; width: 0; background: var(--leaf); border: 2px solid var(--ink); transform: translateY(-50%); }
+.line .dot {
+    position: absolute; top: 50%; width: 18px; height: 18px; padding: 0; border-radius: 50%;
+    background: var(--paper); border: 3px solid var(--ink); transform: translate(-50%, -50%);
+    transition: width .15s ease, height .15s ease, background-color .15s ease;
+}
+.line .dot::before { content: ""; position: absolute; inset: -13px; border-radius: 50%; } /* 命中区 44px */
+.line .dot[aria-current="true"] { width: 26px; height: 26px; background: var(--apricot); }
+
+/* ---------- Experience ---------- */
+/* 右栏不参与撑高：Experience 绝对定位填满整行，高度永远等于左侧项目区，条目多了在卡内滚动 */
+.side { position: relative; display: flex; flex-direction: column; min-width: 0; }
+.exp { position: absolute; inset: 0; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+.exp-hd { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 10px 14px; background: var(--forest); color: var(--paper); border-bottom: var(--b); }
+.exp h3 { font: 400 22px/1 var(--display); text-transform: uppercase; }
+/* 左上角 Aca / Art：都不按 = 上下各一半；按一个 = 只看那一半；再按 = 回到各一半 */
+.modes { display: flex; flex: none; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.modes button {
+    display: grid; place-items: center; width: 44px; height: 36px; padding: 0; border: 0;
+    background: var(--paper); color: var(--ink); position: relative;
+}
+.modes button::before { content: ""; position: absolute; inset: -4px 0; } /* 命中区 44px */
+.modes button + button { border-left: 2px solid var(--ink); }
+.modes svg { display: block; }
+.modes button:hover { background: var(--mist); }
+.modes button[aria-pressed="true"] { background: var(--leaf); }
+.modes button[data-view="art"][aria-pressed="true"] { background: var(--apricot); }
+.halves { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.exp ol {
+    list-style: none; display: flex; flex-direction: column; flex: 1 1 0; min-height: 0;
+    overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--moss) var(--mist);
+}
+.exp ol:focus-visible { outline-offset: -4px; }
+/* 两半之间的分隔：粗线 + 下半部分的 ART 标签 */
+.exp .half[data-side="art"] { border-top: 6px solid var(--ink); box-shadow: inset 0 5px 0 var(--sage); }
+.exp .half::before {
+    position: sticky; top: 0; z-index: 1; align-self: flex-end; margin-bottom: -24px;
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 8px; border: 2px solid var(--ink); border-top: 0; border-right: 0;
+    font: 700 11px/11px var(--mono); letter-spacing: .06em;
+}
+.exp .half[data-side="aca"]::before { content: "ACA" url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2309140f' stroke-width='2.8' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M2 9l10-5 10 5-10 5z'/%3E%3Cpath d='M6 11.5v4.5c3 2.6 9 2.6 12 0v-4.5'/%3E%3Cpath d='M22 9v6'/%3E%3C/svg%3E"); background: var(--mist); }
+.exp .half[data-side="art"]::before { content: "ART" url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='%2309140f'%3E%3Cpath d='M9 18a3 3 0 1 1-2-2.83V5.5l13-2.5v12a3 3 0 1 1-2-2.83V6.9L9 8.6z'/%3E%3C/svg%3E"); background: var(--apricot); }
+.exp[data-view="aca"] .half[data-side="art"],
+.exp[data-view="art"] .half[data-side="aca"] { display: none; }
+.exp[data-view] .half { border-top: 0; }
+.exp[data-view] .half::before { display: none; }
+
+
+/* 竖向时间线：左侧一条细线串起各条经历，日期是条目的第一行小字 */
+.exp li { position: relative; padding: 16px 18px 16px 44px; border-bottom: 2px solid var(--ink); }
+.exp li::before { content: ""; position: absolute; left: 21px; top: 0; bottom: 0; border-left: 2px dashed var(--sage); }
+.exp li:first-child::before { top: 22px; }
+.exp li::after {
+    content: ""; position: absolute; left: 14px; top: 18px; width: 16px; height: 16px;
+    background: var(--leaf); border: 3px solid var(--ink);
+}
+.exp li.now::after { background: var(--apricot); }
+.exp time { display: block; font: 700 12px/1.3 var(--mono); color: var(--moss); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.exp b { display: block; margin-top: 4px; font: 800 17px/1.3 var(--body); }
+.exp .org { display: block; margin-top: 2px; font-size: 15px; font-weight: 500; }
+.exp .with { display: block; margin-top: 2px; font-size: 14px; color: var(--moss); }
+.exp .with a { color: var(--moss); }
+/* 列表之后的空白：斜纹表示“还有位置”，不放占位文字 */
+.exp ol::after {
+    content: ""; flex: 1; min-height: 24px;
+    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgba(164, 200, 173, .45) 10px 12px);
+}
+
+
+
+/* ---------- 教育：时间线 ---------- */
+.timeline { list-style: none; display: grid; gap: 0; }
+.timeline li {
+    display: grid; grid-template-columns: 132px minmax(0, 1fr) 64px; gap: 16px; align-items: center;
+    padding: 18px 20px; background: var(--paper); border: var(--b); border-top-width: 0;
+}
+.timeline li:first-child { border-top-width: 3px; }
+.timeline .when { font: 700 14px/1.3 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.timeline b { display: block; font: 800 19px/1.25 var(--body); }
+.timeline .where { color: var(--moss); font-weight: 600; }
+.timeline-wrap { box-shadow: var(--sh); }
+/* 校徽：放在每一行的右端，和对应的学校挨在一起（格式塔·接近）；没有图片时显示缩写 */
+.crest { position: relative; width: 64px; height: 64px; }
+/* 无框、无底色；multiply 让图片里的白底融进行背景 */
+.crest img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+
+/* ---------- 音乐：完整播放器 ---------- */
+.deck { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; align-items: stretch; }
+.deck-side { position: relative; display: flex; flex-direction: column; min-width: 0; }
+.deck-side .meters { flex: 1; display: flex; flex-direction: column; }
+.deck-side .lyric { margin-top: auto; padding-top: 12px; }
+.player { padding: 18px; }
+.cassette {
+    --c: var(--sage);
+    position: relative; width: 100%; aspect-ratio: 1.6; max-width: 100%;
+    background: var(--forest); border-radius: 14px;
+    border: 3px solid var(--ink); box-shadow: inset 0 0 0 6px var(--pine);
+}
+.cassette .label {
+    position: absolute; inset: 6% 6% 34% 6%;
+    background: var(--c); border: 3px solid var(--ink); border-radius: 6px;
+    background-image: repeating-linear-gradient(0deg, transparent 0 18px, rgba(9,20,15,.14) 18px 20px);
+}
+.cassette .ttl {
+    position: absolute; left: 4%; right: 18%; top: 8%;
+    background: var(--paper); border: 2px solid var(--ink); padding: 3px 8px;
+    font: 700 clamp(11px, 1.8vw, 16px)/1.2 var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cassette .side-l { position: absolute; right: 4%; top: 6%; font: 400 clamp(18px, 3.2vw, 32px)/1 var(--display); }
+.cassette .window {
+    position: absolute; left: 24%; right: 24%; top: 36%; height: 24%;
+    background: var(--pine); border: 3px solid var(--ink); border-radius: 30px;
+    display: flex; justify-content: space-between; align-items: center; padding: 0 4%;
+}
+.reel { position: relative; width: 30%; aspect-ratio: 1; display: grid; place-items: center; }
+.reel .wind {
+    position: absolute; left: 50%; top: 50%; border-radius: 50%; background: var(--tape);
+    width: calc(var(--t, .6) * 160%); aspect-ratio: 1; transform: translate(-50%, -50%);
+    box-shadow: inset 0 0 0 2px var(--ink);
+}
+.hub {
+    position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle, var(--ink) 0 22%, transparent 23%), repeating-conic-gradient(var(--paper) 0 30deg, var(--sage) 30deg 60deg);
+    border: 2px solid var(--ink);
+}
+.cassette .bottom {
+    position: absolute; left: 16%; right: 16%; bottom: 0; height: 22%;
+    background: var(--pine); border: 3px solid var(--ink); border-bottom: 0;
+    clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+}
+
+/* 进度条 = 这首歌真实的波形；已播放部分为苔藓绿 */
+.seek { position: relative; margin-top: 14px; padding-block: 6px; cursor: pointer; touch-action: none; }
+.seek canvas { display: block; width: 100%; height: 56px; border: var(--b); background: var(--paper); }
+.seek .head { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--apricot); border-inline: 1px solid var(--ink); transform: translateX(-50%); pointer-events: none; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; align-items: center; }
+.controls .play { min-width: 128px; }
+.time { margin-left: auto; font: 700 14px/1 var(--mono); font-variant-numeric: tabular-nums; }
+.vol { display: flex; align-items: center; gap: 10px; font: 700 13px/1 var(--mono); }
+.vol input { -webkit-appearance: none; appearance: none; width: 140px; height: 44px; background: transparent; cursor: pointer; }
+.vol input::-webkit-slider-runnable-track { height: 16px; border: var(--b); background: linear-gradient(var(--leaf), var(--leaf)) 0 0 / var(--v, 90%) 100% no-repeat, var(--paper); }
+.vol input::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 30px; margin-top: -10px; background: var(--apricot); border: var(--b); box-shadow: 2px 2px 0 var(--ink); }
+.vol input::-moz-range-track { height: 10px; border: var(--b); background: var(--paper); }
+.vol input::-moz-range-progress { height: 10px; background: var(--leaf); }
+.vol input::-moz-range-thumb { width: 14px; height: 24px; border-radius: 0; background: var(--apricot); border: var(--b); }
+
+/* 曲目表：像简历里的条目一样可扫读 */
+.tracks { padding: 0; }
+.tracks .hd { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px; border-bottom: var(--b); background: var(--mist); }
+.tracks .hd b { font: 400 20px/1 var(--display); text-transform: uppercase; }
+.tracks .hd small { font: 700 12px/1 var(--mono); }
+.tracks ol { list-style: none; }
+.row {
+    width: 100%; display: grid; grid-template-columns: 34px minmax(0, 1fr) 84px 48px; gap: 12px; align-items: center;
+    min-height: 60px; padding: 8px 16px; text-align: left; background: var(--paper); border: 0; border-bottom: 2px solid var(--ink);
+}
+.tracks li:last-child .row { border-bottom: 0; }
+.row:hover { background: var(--mist); }
+.row .n { font: 700 13px/1 var(--mono); font-variant-numeric: tabular-nums; }
+.row b { font: 700 16px/1.25 var(--body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row svg { width: 84px; height: 26px; display: block; }
+.row svg rect { fill: var(--sage); }
+.row .len { font: 700 13px/1 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.row[aria-current="true"] { background: var(--leaf); }
+.row[aria-current="true"] .n { font-size: 0; }
+.row[aria-current="true"] .n::before { content: "▶"; font-size: 14px; }
+.row[aria-current="true"] svg rect { fill: var(--forest); }
+
+.meters { margin-top: 18px; padding: 14px 16px; }
+.spec { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; height: 72px; align-items: end; }
+.spec i { display: block; height: 72px; background: var(--leaf); border: 2px solid var(--ink); transform-origin: bottom; transform: scaleY(.09); }
+.lyric { margin-top: 12px; font: 600 15px/1.4 var(--body); }
+.lyric small { display: block; font: 700 11px/1.3 var(--mono); color: var(--moss); text-transform: uppercase; letter-spacing: .06em; }
+
+/* ---------- 联系 ---------- */
+.contact { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 0; background: var(--apricot); }
+.contact > div { padding: 26px 28px; }
+.contact > div + div { border-left: var(--b); background: var(--paper); }
+.contact h3 { font: 400 clamp(26px, 3.6vw, 40px)/1.05 var(--display); text-wrap: balance; }
+.contact p { margin-top: 12px; max-width: 46ch; }
+.contact .mail-row code { font-size: 16px; }
+.elsewhere { list-style: none; display: grid; gap: 12px; }
+.contact .mail-row { margin-top: 18px; }
+.elsewhere a {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; padding: 0 14px;
+    border: var(--b); background: var(--mist); color: var(--ink); text-decoration: none; font-weight: 800;
+    box-shadow: 3px 3px 0 var(--ink); transition: transform .08s ease-out, box-shadow .08s ease-out;
+}
+.elsewhere a:hover { background: var(--leaf); transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); }
+.elsewhere a:active { transform: translate(3px, 3px); box-shadow: none; }
+.elsewhere small { font: 700 12px/1 var(--mono); color: var(--moss); }
+/* 预留位：虚线、无阴影、不可点，一眼看出“还没有” */
+.elsewhere .soon {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; padding: 0 14px;
+    border: 3px dashed var(--ink); background: transparent; font-weight: 800; color: var(--moss); cursor: default;
+}
+footer { margin-top: 48px; font: 700 12px/1.6 var(--mono); color: var(--moss); }
+
+/* ---------- 迷你播放条（常驻底部）→ 可缩成一颗按钮 ---------- */
+.mini {
+    position: fixed; z-index: 60;
+    left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    width: min(680px, calc(100vw - 2 * max(16px, env(safe-area-inset-left, 0px))));
+    transform: translateX(-50%);
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center;
+    background: var(--paper); border: var(--b); box-shadow: var(--sh); padding: 8px 8px 12px 10px;
+    transition: transform .25s ease, opacity .2s ease;
+}
+.mini.away { transform: translate(-50%, 140%); opacity: 0; pointer-events: none; }
+.mini .disc {
+    width: 44px; height: 44px; border-radius: 50%; border: var(--b);
+    background: radial-gradient(circle, var(--ink) 0 18%, var(--c, var(--sage)) 19% 52%, var(--tape) 53%);
+}
+.mini .info { min-width: 0; }
+.mini .info b { display: block; font: 800 15px/1.2 var(--body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mini .info small { font: 700 12px/1.2 var(--mono); color: var(--moss); font-variant-numeric: tabular-nums; }
+.mini .acts { display: flex; gap: 8px; }
+.mini .acts .btn { min-height: 44px; min-width: 44px; width: 44px; padding: 0; box-shadow: 3px 3px 0 var(--ink); font-size: 16px; }
+.mini .acts .btn.play { background: var(--leaf); }
+.mini .bar { position: absolute; left: -3px; right: -3px; bottom: -3px; height: 9px; border: var(--b); background: var(--mist); cursor: pointer; }
+.mini .bar::before { content: ""; position: absolute; inset: -12px 0 -6px; } /* 命中区扩到 ~27px */
+.mini .bar i { display: block; height: 100%; width: 0; background: var(--moss); }
+/* 缩小状态：只剩唱片 + 播放键 */
+.mini.small { width: auto; grid-template-columns: auto auto; left: auto; right: max(16px, env(safe-area-inset-right, 0px)); transform: none; padding: 8px; }
+.mini.small .info, .mini.small .acts .opt { display: none; }
+.mini.small.away { transform: translateY(140%); }
+
+
+body.calm .hero h1.bump { animation: none; }
+body.calm .btn, body.calm .mini { transition: none; }
+
+@media (max-width: 860px) {
+    .hero, .cols, .deck, .contact { grid-template-columns: minmax(0, 1fr); }
+    .pcard { flex-basis: min(66%, 260px); }
+    .exp { position: static; }
+    .exp ol { flex: none; overflow: visible; }
+    .rail::after { flex-basis: calc(100% - min(66%, 260px) - 20px); }
+    .contact > div + div { border-left: 0; border-top: var(--b); }
+    .poster { justify-self: center; max-width: 380px; margin-top: 16px; }
+}
+@media (max-width: 520px) {
+    .nav .brand { display: none; }
+    .nav ul { margin-left: 0; }
+    .timeline li { grid-template-columns: minmax(0, 1fr) 52px; gap: 4px 12px; }
+    .timeline li > :not(.crest) { grid-column: 1; }
+    .timeline .crest { grid-column: 2; grid-row: 1 / span 2; width: 52px; height: 52px; }
+    .badge.b1 { left: -6px; }
+    .badge.b2 { right: -6px; }
+    .row { grid-template-columns: 26px minmax(0, 1fr) 48px; }
+    .row svg { display: none; }
+    .time { margin-left: 0; }
+    .mini .acts .opt.next { display: none; }
+}
+@media print {
+    body { background: #fff; padding: 0; }
+    .nav, .mini, .deck, #music .sec-head p, .cta, .skip { display: none !important; }
+    .card, .btn, .timeline-wrap { box-shadow: none; }
+    .hero h1 { transform: none; box-shadow: none; }
+}
+</style>
 </head>
 <body>
-    <div class="progress-bar" id="progressBar"></div>
-    
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <span class="brand-text">Ziang Chen</span>
-                <span class="brand-subtitle">PhD Student</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#hero" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#research" class="nav-link">Research</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Sections">
+    <div class="wrap">
+        <a class="brand" href="#top">Ziang Chen</a>
+        <ul>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#music">Music</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main id="main">
+<div class="wrap">
+    <!-- 1. 身份：5 秒内回答“这是谁、做什么、怎么联系” -->
+    <header class="hero" id="top">
+        <div class="hero-main">
+            <h1 id="headline">ZIANG<br>CHEN<span>.</span></h1>
+            <p class="role">PhD candidate in Computer Science</p>
+            <p class="reach">Advised by <a href="https://www3.cs.stonybrook.edu/~xiaojun/">Prof. Xiaojun Bi</a> · Stony Brook, NY</p>
+            <p class="lead">I’m passionate about what, in the age of AI, remains irreplaceable in the human spirit and experience.</p>
+            <p class="summary">
+                My work focuses on <strong>multimodal input</strong>: using speech, touch and more so that computers and LLMs
+                interact and collaborate with people in ways that fit how people actually work.
+                I value principled thinking as much as the concrete engineering details that make it real.
+            </p>
+            <p class="aside-note">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M9 18a3 3 0 1 1-2-2.83V5.5l13-2.5v12a3 3 0 1 1-2-2.83V6.9L9 8.6z"/></svg>
+                <span>Beyond research, I’m also a music producer and a singer.</span>
+            </p>
+            <div class="cta">
+                <a class="btn primary" href="#research">See my research</a>
+                <button class="btn dark" id="heroPlay" type="button">▶ Play my song</button>
+                <a class="btn" href="mailto:ziang.chen@stonybrook.edu">Email me</a>
             </div>
         </div>
-    </nav>
 
-    <!-- 主页面 -->
-    <main>
-        <!-- Hero 区域 -->
-        <section id="hero" class="hero-section">
-            <div class="hero-container">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <span class="hero-greeting">Hello, I'm</span>
-                        <h1 class="hero-name">Ziang Chen</h1>
-                        <p class="hero-title">PhD Student in Computer Science</p>
-                        <p class="hero-description">
-                            Passionate about human-computer interaction and large language model applications. 
-                            Currently pursuing my doctoral degree at Stony Brook University.
-                        </p>
-                        <div class="hero-buttons">
-                            <a href="#research" class="btn btn-primary">View Research</a>
-                            <a href="#contact" class="btn btn-secondary">Get in Touch</a>
-                        </div>
-                    </div>
-                    <div class="hero-image">
-                        <div class="image-container">
-                            <img src="assets/images/profile.jpg" alt="Ziang Chen" class="profile-img">
-                            <div class="image-overlay"></div>
-                        </div>
-                        <div class="floating-elements">
-                            <div class="floating-card">
-                                <i class="fas fa-graduation-cap"></i>
-                                <span>PhD Student</span>
-                            </div>
-                            <div class="floating-card">
-                                <i class="fas fa-brain"></i>
-                                <span>HCI Research</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <aside class="poster" aria-label="Photo">
+            <figure>
+                <div class="photo"><img src="assets/images/ziang-platform.jpg" alt="Ziang Chen in a knit hood on a train platform at night" width="1200" height="900" fetchpriority="high"></div>
+                <figcaption class="mail-row"><code>ziang.chen@stonybrook.edu</code><button class="copy" type="button" data-copy="ziang.chen@stonybrook.edu">Copy</button></figcaption>
+            </figure>
+            <p class="badge b1"><small>PhD candidate</small>Stony Brook CS</p>
+            <p class="badge b2"><small>Focus</small>HCI · LLM · Multimodal</p>
+        </aside>
+    </header>
 
-        <!-- About 区域 -->
-        <section id="about" class="about-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>About Me</h2>
-                    <p>Get to know more about my background and journey</p>
-                </div>
-                
-                <div class="about-grid">
-                    <!-- 个人信息卡片 -->
-                    <div class="info-card">
-                        <div class="card-header">
-                            <i class="fas fa-user"></i>
-                            <h3>Personal Info</h3>
+    <!-- 2. 研究 -->
+    <section aria-labelledby="research-h" id="research">
+        <div class="sec-head"><h2 id="research-h">Research</h2><p>Projects · experience</p></div>
+        <div class="cols">
+            <div class="projects">
+                <!-- 卡片顺序由脚本决定：data-pinned 的排最前，其余保持原顺序，占位卡最后 -->
+                <div class="rail-box" id="railBox">
+                <div class="rail" id="rail" tabindex="0" role="region" aria-label="Projects">
+                    <article class="pcard" data-pinned="true" data-title="Tap&amp;Say">
+                        <div class="fig">
+                            <img src="assets/images/projects/tapsay.jpg" alt="Tap&amp;Say: tap a misrecognized word, say the fix, and pick from LLM suggestions" width="1200" height="369" loading="lazy">
                         </div>
-                        <div class="info-list">
-                            <div class="info-item">
-                                <i class="fas fa-envelope"></i>
-                                <div>
-                                    <span class="label">Email</span>
-                                    <a href="mailto:ziang.chen@stonybrook.edu">ziang.chen@stonybrook.edu</a>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-phone"></i>
-                                <div>
-                                    <span class="label">Phone</span>
-                                    <a href="tel:+19295447335">+1 (929) 544-7335</a>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <div>
-                                    <span class="label">Location</span>
-                                    <span>Stony Brook, NY</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 教育背景 -->
-                    <div class="education-card">
-                        <div class="card-header">
-                            <i class="fas fa-graduation-cap"></i>
-                            <h3>Education</h3>
-                        </div>
-                        <div class="education-list">
-                            <div class="education-item">
-                                <div class="edu-period">Current</div>
-                                <div class="edu-content">
-                                    <h4>Ph.D. in Computer Science</h4>
-                                    <p>Stony Brook University</p>
-                                    <div class="gpa">GPA: 3.890/4.0</div>
-                                </div>
-                            </div>
-                            <div class="education-item">
-                                <div class="edu-period">2024</div>
-                                <div class="edu-content">
-                                    <h4>B.E. in Computer Science</h4>
-                                    <p>Northeastern University (China)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 研究兴趣 -->
-                    <div class="interests-card">
-                        <div class="card-header">
-                            <i class="fas fa-lightbulb"></i>
-                            <h3>Research Interests</h3>
-                        </div>
-                        <div class="interests-grid">
-                            <div class="interest-item">
-                                <i class="fas fa-desktop"></i>
-                                <span>Human-Computer Interaction</span>
-                            </div>
-                            <div class="interest-item">
-                                <i class="fas fa-brain"></i>
-                                <span>Large Language Models</span>
-                            </div>
-                            <div class="interest-item">
-                                <i class="fas fa-microphone"></i>
-                                <span>Speech Recognition</span>
-                            </div>
-                            <div class="interest-item">
-                                <i class="fas fa-balance-scale"></i>
-                                <span>Legal Technology</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 导师信息 -->
-                    <div class="advisor-card">
-                        <div class="card-header">
-                            <i class="fas fa-user-tie"></i>
-                            <h3>Academic Advisor</h3>
-                        </div>
-                        <div class="advisor-info">
-                            <h4>Xiaojun Bi</h4>
-                            <p>Associate Professor</p>
-                            <p>Stony Brook University</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Research 区域 -->
-        <section id="research" class="research-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Research Projects</h2>
-                    <p>Explore my latest research in HCI and machine learning</p>
-                </div>
-
-                <!-- 筛选标签 -->
-                <div class="filter-container">
-                    <div class="filter-tabs">
-                        <button class="filter-btn active" data-filter="all">All Projects</button>
-                        <button class="filter-btn" data-filter="llm">LLM</button>
-                        <button class="filter-btn" data-filter="hci">HCI</button>
-                        <button class="filter-btn" data-filter="speech">Speech Recognition</button>
-                    </div>
-                </div>
-
-                <!-- 项目网格 -->
-                <div class="projects-grid">
-                    <article class="project-card" data-category="llm hci speech">
-                        <div class="project-image">
-                            <div class="project-overlay">
-                                <div class="project-tags">
-                                    <span class="tag">LLM</span>
-                                    <span class="tag">HCI</span>
-                                    <span class="tag">Speech Recognition</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <div class="project-meta">
-                                <span class="project-date">Jan 2024 - Present</span>
-                                <span class="project-status">Ongoing</span>
-                            </div>
-                            <h3>Tap&Say: LLM-based Speech Error Correction</h3>
-                            <p>Development of a web-based demonstration that enables speech error correction through simple interactions using LLM suggestions. Originally created by Maozheng, focusing on user experience and interface design.</p>
-                            <ul class="project-highlights">
-                                <li>Speech error correction through intuitive interactions</li>
-                                <li>LLM-powered intelligent suggestions</li>
-                                <li>Real-time feedback and corrections</li>
-                            </ul>
-                        </div>
+                        <h3>Tap&amp;Say</h3>
+                        <div class="tags" aria-label="Related topics"><span>LLM</span><span>Speech input</span><span>HCI</span></div>
                     </article>
-
+                    <article class="pcard" data-title="Arbor">
+                        <div class="fig">
+                            <img src="assets/images/projects/arbor.jpg" alt="Arbor workspace: evidence cards, a writing tree of arguments, and the drafted petition letter" width="1400" height="656" loading="lazy">
+                        </div>
+                        <h3>Arbor</h3>
+                        <div class="tags" aria-label="Related topics"><span>LLM</span><span>Legal tech</span><span>Writing support</span></div>
+                    </article>
+                    <article class="pcard soon" data-placeholder="true" data-title="Coming soon">
+                        <div class="fig" aria-hidden="true"><span>Coming soon</span></div>
+                        <h3>Coming soon</h3>
+                        <div class="tags" aria-label="Related topics"><span>Coming soon</span></div>
+                    </article>
+                </div>
+                </div>
+                <div class="scrub">
+                    <button class="btn" id="railPrev" type="button" aria-label="Previous project">←</button>
+                    <div class="line" id="line" role="slider" tabindex="0" aria-label="Project" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
+                        <span class="fill" id="lineFill"></span>
+                    </div>
+                    <button class="btn" id="railNext" type="button" aria-label="Next project">→</button>
                 </div>
             </div>
-        </section>
 
-        <!-- Contact 区域 -->
-        <section id="contact" class="contact-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Get In Touch</h2>
-                    <p>Feel free to reach out for collaborations or just to say hello</p>
-                </div>
-                
-                <div class="contact-grid">
-                    <div class="contact-info">
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <h3>Email Me</h3>
-                            <p>ziang.chen@stonybrook.edu</p>
-                            <a href="mailto:ziang.chen@stonybrook.edu" class="contact-btn">Send Email</a>
+            <div class="side">
+                <div class="card exp" id="exp">
+                    <div class="exp-hd">
+                        <h3 id="exp-h">Experience</h3>
+                        <div class="modes" role="group" aria-label="Show only">
+                            <button type="button" data-view="aca" aria-pressed="false" aria-label="Academic only" title="Academic"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5v4.5c3 2.6 9 2.6 12 0v-4.5"/><path d="M22 9v6"/></svg></button>
+                            <button type="button" data-view="art" aria-pressed="false" aria-label="Art only" title="Art"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M9 18a3 3 0 1 1-2-2.83V5.5l13-2.5v12a3 3 0 1 1-2-2.83V6.9L9 8.6z"/></svg></button>
                         </div>
-                        
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
-                            <h3>Call Me</h3>
-                            <p>+1 (929) 544-7335</p>
-                            <a href="tel:+19295447335" class="contact-btn">Call Now</a>
-                        </div>
-                        
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <h3>Work Hours</h3>
-                            <p>9:00 AM - 9:00 PM ET</p>
-                            <span class="contact-note">Monday - Friday</span>
-                        </div>
+                    </div>
+                    <div class="halves">
+                        <ol class="half" data-side="aca" tabindex="0" aria-label="Academic experience">
+                        <li class="now">
+                            <time datetime="2024-08-26">2024.08.26 – now</time>
+                            <b>PhD Researcher, HCI</b>
+                            <span class="org">Stony Brook University</span>
+                            <span class="with">With <a href="https://www3.cs.stonybrook.edu/~xiaojun/">Prof. Xiaojun Bi</a></span>
+                        </li>
+                        <li>
+                            <time datetime="2026-11-02">2026.11.02 – 11.05</time>
+                            <b>Student Volunteer, UIST 2026</b>
+                            <span class="org">ACM UIST · Detroit, MI</span>
+                            <span class="with">With Tony Li, Paul Zhu &amp; the SV Bro &amp; Sis</span>
+                        </li>
+                        </ol>
+                        <ol class="half" data-side="art" tabindex="0" aria-label="Art experience">
+                        <li>
+                            <time datetime="2024-04-10">2024.04.10 – 2024.06.07</time>
+                            <b>Lead Vocalist</b>
+                            <span class="org">Alley Girl (Band)</span>
+                            <span class="with">With Jiaming Zhang, Haowei Zhang, Tao Zhang, Shuyi Geng &amp; Yusen Gu</span>
+                        </li>
+                        <li>
+                            <time datetime="2022-09-08">2022.09.08 – 2023.06.29</time>
+                            <b>Honorary Band Leader</b>
+                            <span class="org">LiveBand2022</span>
+                            <span class="with">With my dearest people, in memory of LiveBand19 &amp; LiveBand20</span>
+                        </li>
+                        <li>
+                            <time datetime="2020-09-30">2020.09.30 – 2024.06.07</time>
+                            <b>Lead Vocalist</b>
+                            <span class="org">MoonMan (Band)</span>
+                            <span class="with">With Jiaming Zhang, Haowei Zhang, Yining Liu, Yuyang Chen, Ningyu Zhang, Lei Ma &amp; Erdan Mai</span>
+                        </li>
+                        </ol>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Ziang Chen</h3>
-                    <p>PhD Student in Computer Science</p>
+    <!-- 3. 教育 -->
+    <section aria-labelledby="education-h" id="education">
+        <div class="sec-head"><h2 id="education-h">Education</h2></div>
+        <div class="timeline-wrap">
+            <ol class="timeline">
+                <li><span class="when">2024 – now</span><div><b>Ph.D. in Computer Science</b><span class="where">Stony Brook University · PhD candidate</span></div><span class="crest" aria-hidden="true"><img src="assets/images/schools/sbu.png" alt=""></span></li>
+                <li><span class="when">2020 – 2024</span><div><b>B.E. in Computer Science</b><span class="where">Northeastern University (China)</span></div><span class="crest" aria-hidden="true"><img src="assets/images/schools/neu.png" alt=""></span></li>
+                <li><span class="when">2017 – 2020</span><div><b>High School</b><span class="where">Hefei No. 1 High School</span></div><span class="crest" aria-hidden="true"><img src="assets/images/schools/hf1.png" alt=""></span></li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- 4. 音乐：完整播放器 -->
+    <section aria-labelledby="music-h" id="music">
+        <div class="sec-head"><h2 id="music-h">Music</h2><p>Original songs · written &amp; recorded by Ziang</p></div>
+        <div class="deck" id="deck">
+            <div class="card player">
+                <div class="cassette" id="cassette" aria-hidden="true">
+                    <div class="label"><div class="ttl" id="tapeTitle">—</div><div class="side-l" id="tapeSide">A</div></div>
+                    <div class="window">
+                        <div class="reel" id="reelL"><div class="wind"></div><div class="hub"></div></div>
+                        <div class="reel" id="reelR"><div class="wind"></div><div class="hub"></div></div>
+                    </div>
+                    <div class="bottom"></div>
                 </div>
-                <div class="footer-links">
-                    <a href="#hero">Home</a>
-                    <a href="#about">About</a>
-                    <a href="#research">Research</a>
-                    <a href="#contact">Contact</a>
+                <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Playback position"
+                     aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="0:00 of 0:00">
+                    <canvas id="wave" aria-hidden="true"></canvas>
+                    <span class="head" id="head"></span>
+                </div>
+                <div class="controls">
+                    <button class="btn sq" id="prev" type="button" aria-label="Previous song">⏮</button>
+                    <button class="btn primary play" id="toggle" type="button" aria-label="Play">▶ Play</button>
+                    <button class="btn sq" id="next" type="button" aria-label="Next song">⏭</button>
+                    <span class="time" id="time" aria-hidden="true">0:00 / 0:00</span>
+                </div>
+                <div class="controls">
+                    <label class="vol" for="vol">Volume <input id="vol" type="range" min="0" max="100" value="90"></label>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Ziang Chen. Have a good day!</p>
+
+            <div class="deck-side">
+                <div class="card tracks">
+                    <div class="hd"><b>Tracklist</b><small id="count">5 songs</small></div>
+                    <ol id="list"></ol>
+                </div>
+                <div class="card meters">
+                    <div class="spec" id="spec" aria-hidden="true"></div>
+                    <p class="lyric"><small>Lyrics</small><span id="lyric">Lyrics coming soon.</span></p>
+                </div>
             </div>
         </div>
-    </footer>
+    </section>
 
-    <!-- 返回顶部按钮 -->
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- 5. 联系：峰终定律，页尾用唯一的杏色大块收尾 -->
+    <section aria-labelledby="contact-h" id="contact">
+        <div class="sec-head"><h2 id="contact-h">Contact</h2></div>
+        <div class="card contact">
+            <div>
+                <h3>Let’s talk about research, interfaces, or songs.</h3>
+                <p class="mail-row"><code>ziang.chen@stonybrook.edu</code><button class="copy" type="button" data-copy="ziang.chen@stonybrook.edu">Copy</button></p>
+            </div>
+            <div>
+                <ul class="elsewhere" aria-label="Elsewhere">
+                    <!-- 预留：论文被接收后把这一行换成 <a href="Scholar 链接"> -->
+                    <li><span class="soon" aria-disabled="true"><span>Google Scholar</span><small>Coming soon</small></span></li>
+                    <li><a href="https://www.linkedin.com/in/ziang-chen-b36000329/"><span>LinkedIn</span><small>ziang-chen ↗</small></a></li>
+                    <!-- 预留：准备好后把这一行换成 <a href="https://github.com/…"> -->
+                    <li><span class="soon" aria-disabled="true"><span>GitHub</span><small>Coming soon</small></span></li>
+                </ul>
+            </div>
+        </div>
+        <footer>© 2026 Ziang Chen · Stony Brook, NY</footer>
+    </section>
+</div>
+</main>
 
-    <script src="js/main.js"></script>
+<!-- 迷你播放条：常驻；滚到完整播放器时让位；可缩成一颗按钮 -->
+<div class="mini" id="mini" role="region" aria-label="Mini player">
+    <div class="disc" id="miniDisc" aria-hidden="true"></div>
+    <div class="info"><b id="miniTitle">—</b><small id="miniTime">Original song · 0:00</small></div>
+    <div class="acts">
+        <button class="btn play" id="miniToggle" type="button" aria-label="Play">▶</button>
+        <button class="btn opt next" id="miniNext" type="button" aria-label="Next song">⏭</button>
+        <button class="btn opt" id="miniOpen" type="button" aria-label="Open full player">⤢</button>
+        <button class="btn" id="miniShrink" type="button" aria-label="Minimize player" aria-expanded="true">–</button>
+    </div>
+    <div class="bar" id="miniBar" aria-hidden="true"><i id="miniFill"></i></div>
+</div>
+
+<div class="sr-only" aria-live="polite" id="live"></div>
+
+<script src="js/tracks.js"></script>
+<script src="js/sound-engine.js"></script>
+<script>
+(function () {
+    'use strict';
+    const SE = window.SoundEngine;
+    const $ = (id) => document.getElementById(id);
+    const LABELS = ['#a4c8ad', '#429c5a', '#d9ecdc', '#f4a254'];
+    const labelColor = (i) => LABELS[i % LABELS.length];
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmt = (s) => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + pad(s % 60); };
+    const announce = (msg) => { $('live').textContent = msg; };
+
+    /* ---------- 减少动效：跟随系统设置 ---------- */
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let calm = mq.matches;
+    const setCalm = (v) => { calm = v; document.body.classList.toggle('calm', v); };
+    setCalm(calm);
+    mq.addEventListener('change', (e) => setCalm(e.matches));
+
+    /* ---------- Experience：Aca / Art 视图 ---------- */
+    const exp = $('exp');
+    exp.querySelectorAll('.modes button').forEach((b) => b.addEventListener('click', () => {
+        const v = exp.dataset.view === b.dataset.view ? null : b.dataset.view;
+        if (v) exp.dataset.view = v; else delete exp.dataset.view;
+        exp.querySelectorAll('.modes button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.view === v)));
+        announce(v === 'aca' ? 'Experience: academic only' : v === 'art' ? 'Experience: art only' : 'Experience: academic and art');
+    }));
+
+    /* ---------- 复制邮箱 ---------- */
+    document.querySelectorAll('[data-copy]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const done = () => { btn.textContent = 'Copied ✓'; announce('Email copied'); setTimeout(() => { btn.textContent = 'Copy'; }, 1500); };
+            const select = () => {
+                const code = btn.parentElement.querySelector('code');
+                const r = document.createRange(); r.selectNodeContents(code);
+                const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+            };
+            if (navigator.clipboard) navigator.clipboard.writeText(btn.dataset.copy).then(done).catch(select); else select();
+        });
+    });
+
+    /* ---------- 导航：当前分区高亮 ---------- */
+    const navLinks = Array.from(document.querySelectorAll('.nav li a'));
+    const sections = navLinks.map((a) => document.querySelector(a.getAttribute('href')));
+    const navIO = new IntersectionObserver(() => {
+        const y = window.innerHeight * 0.35;
+        let idx = -1;
+        sections.forEach((s, i) => { if (s.offsetParent !== null && s.getBoundingClientRect().top <= y) idx = i; });
+        navLinks.forEach((a, i) => { if (i === idx) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    }, { threshold: [0, 0.25, 0.5, 1], rootMargin: '0px 0px -40% 0px' });
+    sections.forEach((s) => navIO.observe(s));
+
+    /* ---------- 项目：置顶排序 + 横向滑动 + 线和点组成的滑动轴 ---------- */
+    (function projects() {
+        const rail = $('rail'), line = $('line');
+        const cards = Array.from(rail.querySelectorAll('.pcard'));
+        const rank = (c) => (c.dataset.placeholder ? 2 : c.dataset.pinned === 'true' ? 0 : 1);
+        cards.sort((a, b) => rank(a) - rank(b));   // sort 是稳定的，同级保持原顺序
+        cards.forEach((c) => rail.appendChild(c));
+
+        const maxScroll = () => Math.max(1, rail.scrollWidth - rail.clientWidth);
+        const cardLeft = (c) => c.offsetLeft - rail.offsetLeft;
+        // 每个点放在“滚到这张卡时”对应的进度位置
+        const dotFrac = (i) => Math.min(1, Math.max(0, cardLeft(cards[i]) / maxScroll()));
+
+        const dots = cards.map((c, i) => {
+            const d = document.createElement('button');
+            d.type = 'button';
+            d.className = 'dot' + (c.dataset.placeholder ? ' ph' : '');
+            d.tabIndex = -1;
+            d.setAttribute('aria-label', c.dataset.title);
+            d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });
+            line.appendChild(d);
+            return d;
+        });
+        line.setAttribute('aria-valuemax', String(cards.length));
+
+        const behavior = () => (calm ? 'auto' : 'smooth');
+        function go(i) {
+            i = Math.max(0, Math.min(cards.length - 1, i));
+            rail.scrollTo({ left: Math.min(cardLeft(cards[i]), maxScroll()), behavior: behavior() });
+        }
+        function current() {
+            const f = rail.scrollLeft / maxScroll();
+            let best = 0;
+            dots.forEach((_, i) => { if (Math.abs(dotFrac(i) - f) < Math.abs(dotFrac(best) - f)) best = i; });
+            return best;
+        }
+        function layout() { dots.forEach((d, i) => { d.style.left = (dotFrac(i) * 100).toFixed(2) + '%'; }); }
+        function sync() {
+            const f = Math.min(1, rail.scrollLeft / maxScroll());
+            $('lineFill').style.width = (f * 100).toFixed(2) + '%';
+            const k = current();
+            dots.forEach((d, i) => { if (i === k) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
+            line.setAttribute('aria-valuenow', String(k + 1));
+            line.setAttribute('aria-valuetext', cards[k].dataset.title + ', ' + (k + 1) + ' of ' + cards.length);
+            $('railPrev').disabled = rail.scrollLeft <= 2;
+            $('railNext').disabled = rail.scrollLeft >= maxScroll() - 2;
+            $('railBox').classList.toggle('more-left', rail.scrollLeft > 2);
+            $('railBox').classList.toggle('more-right', rail.scrollLeft < maxScroll() - 2);
+        }
+
+        // 拖动线 = 直接拖动滚动位置；松手后由 scroll-snap 吸附到最近的卡片
+        let drag = false;
+        const fracAt = (e) => { const r = line.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); };
+        line.addEventListener('pointerdown', (e) => {
+            if (e.target.classList.contains('dot')) return;
+            drag = true;
+            line.setPointerCapture(e.pointerId);
+            document.body.classList.add('dragging');
+            rail.style.scrollSnapType = 'none';
+            rail.scrollLeft = fracAt(e) * maxScroll();
+        });
+        line.addEventListener('pointermove', (e) => { if (drag) rail.scrollLeft = fracAt(e) * maxScroll(); });
+        const end = () => {
+            if (!drag) return;
+            drag = false;
+            document.body.classList.remove('dragging');
+            const k = current();
+            rail.style.scrollSnapType = '';
+            go(k);
+        };
+        line.addEventListener('pointerup', end);
+        line.addEventListener('pointercancel', end);
+        line.addEventListener('keydown', (e) => {
+            const k = current();
+            const map = { ArrowRight: k + 1, ArrowDown: k + 1, ArrowLeft: k - 1, ArrowUp: k - 1, Home: 0, End: cards.length - 1 };
+            if (!(e.key in map)) return;
+            e.preventDefault();
+            go(map[e.key]);
+        });
+
+        $('railPrev').addEventListener('click', () => go(current() - 1));
+        $('railNext').addEventListener('click', () => go(current() + 1));
+        let raf = 0;
+        rail.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(sync); }, { passive: true });
+        window.addEventListener('resize', () => { layout(); sync(); });
+        layout();
+        sync();
+    })();
+
+    /* ---------- 曲目表 ---------- */
+    function waveSvg(peaks, bars) {
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', '0 0 ' + bars * 3 + ' 26');
+        svg.setAttribute('aria-hidden', 'true');
+        const step = (peaks || []).length / bars;
+        for (let i = 0; i < bars; i++) {
+            let v = 0.3;
+            if (peaks && peaks.length) {
+                v = 0;
+                for (let k = Math.floor(i * step); k < Math.floor((i + 1) * step); k++) v = Math.max(v, peaks[k]);
+            }
+            const h = Math.max(2, v * 24);
+            const r = document.createElementNS(ns, 'rect');
+            r.setAttribute('x', i * 3); r.setAttribute('y', (26 - h) / 2);
+            r.setAttribute('width', 2); r.setAttribute('height', h);
+            svg.appendChild(r);
+        }
+        return svg;
+    }
+    function renderList() {
+        const list = $('list');
+        list.textContent = '';
+        SE.tracks.forEach((t, i) => {
+            const li = document.createElement('li');
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'row';
+            b.innerHTML = '<span class="n">' + pad(i + 1) + '</span><b></b><span class="w"></span><span class="len"></span>';
+            b.querySelector('b').textContent = t.title;
+            b.querySelector('.w').appendChild(waveSvg(t.peaks, 28));
+            b.querySelector('.len').textContent = t.duration ? fmt(t.duration) : '—';
+            b.setAttribute('aria-label', 'Play ' + t.title + (t.duration ? ', ' + fmt(t.duration) : ''));
+            b.addEventListener('click', () => { if (i === SE.current) SE.toggle(); else SE.play(i); });
+            li.appendChild(b);
+            list.appendChild(li);
+        });
+        $('count').textContent = SE.tracks.length + ' songs';
+        markCurrent();
+    }
+    function markCurrent() {
+        $('list').querySelectorAll('.row').forEach((el, k) => {
+            if (k === SE.current) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current');
+        });
+    }
+
+    /* ---------- 波形进度条 ---------- */
+    const wave = $('wave'), wctx = wave.getContext('2d');
+    const css = getComputedStyle(document.documentElement);
+    const C = { moss: css.getPropertyValue('--moss').trim(), sage: css.getPropertyValue('--sage').trim(), paper: css.getPropertyValue('--paper').trim() };
+    function sizeWave() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        wave.width = Math.round(wave.clientWidth * dpr);
+        wave.height = Math.round(wave.clientHeight * dpr);
+    }
+    function drawWave(p) {
+        const w = wave.width, h = wave.height;
+        if (!w) return;
+        wctx.fillStyle = C.paper;
+        wctx.fillRect(0, 0, w, h);
+        const peaks = SE.track.peaks || [];
+        const n = peaks.length || 80;
+        const bw = w / n;
+        for (let i = 0; i < n; i++) {
+            const v = peaks.length ? peaks[i] : 0.35;
+            const bh = Math.max(2, v * (h - 10));
+            wctx.fillStyle = (i + 0.5) / n <= p ? C.moss : C.sage;
+            wctx.fillRect(i * bw + bw * 0.15, (h - bh) / 2, Math.max(1, bw * 0.7), bh);
+        }
+    }
+    sizeWave();
+    window.addEventListener('resize', () => { sizeWave(); lastWaveP = -1; });
+
+    /* ---------- 曲目 / 状态 ---------- */
+    function renderTrack() {
+        const i = SE.current, t = SE.track;
+        $('tapeTitle').textContent = t.title;
+        $('tapeSide').textContent = String.fromCharCode(65 + (i % 26));
+        $('cassette').style.setProperty('--c', labelColor(i));
+        $('miniDisc').style.setProperty('--c', labelColor(i));
+        $('miniTitle').textContent = t.title;
+        markCurrent();
+        lastWaveP = -1;
+        announce('Current song: ' + t.title);
+    }
+    function renderState() {
+        const playing = SE.playing;
+        $('toggle').textContent = playing ? '❚❚ Pause' : '▶ Play';
+        $('toggle').setAttribute('aria-label', playing ? 'Pause' : 'Play');
+        $('miniToggle').textContent = playing ? '❚❚' : '▶';
+        $('miniToggle').setAttribute('aria-label', playing ? 'Pause' : 'Play');
+        $('heroPlay').textContent = playing ? '❚❚ Pause my song' : '▶ Play my song';
+        announce((playing ? 'Playing: ' : 'Paused: ') + SE.track.title);
+    }
+    renderList();
+    renderTrack();
+    $('live').textContent = '';
+    SE.on('tracks', renderList);
+    SE.on('track', renderTrack);
+    SE.on('state', renderState);
+    SE.on('error', () => announce('This song could not be loaded.'));
+    SE.on('beat', () => {
+        if (calm) return;
+        const h = $('headline');
+        h.classList.remove('bump'); void h.offsetWidth; h.classList.add('bump');
+    });
+
+    $('toggle').addEventListener('click', () => SE.toggle());
+    $('heroPlay').addEventListener('click', () => SE.toggle());
+    $('prev').addEventListener('click', () => SE.prev());
+    $('next').addEventListener('click', () => SE.next());
+    $('miniToggle').addEventListener('click', () => SE.toggle());
+    $('miniNext').addEventListener('click', () => SE.next());
+    $('miniOpen').addEventListener('click', () => {
+        document.getElementById('music').scrollIntoView({ block: 'start' });
+        $('toggle').focus({ preventScroll: true });
+    });
+
+    /* ---------- 迷你条：缩小 / 展开；完整播放器可见时让位 ---------- */
+    const mini = $('mini');
+    let small = false;
+    try { small = localStorage.getItem('zc-mini-small') === '1'; } catch (e) { /* 存储不可用时用默认值 */ }
+    function setSmall(v) {
+        small = v;
+        mini.classList.toggle('small', v);
+        $('miniShrink').textContent = v ? '+' : '–';
+        $('miniShrink').setAttribute('aria-label', v ? 'Expand player' : 'Minimize player');
+        $('miniShrink').setAttribute('aria-expanded', String(!v));
+        try { localStorage.setItem('zc-mini-small', v ? '1' : '0'); } catch (e) { /* 忽略 */ }
+    }
+    setSmall(small);
+    $('miniShrink').addEventListener('click', () => setSmall(!small));
+    new IntersectionObserver((entries) => {
+        const visible = entries[0].isIntersecting;
+        mini.classList.toggle('away', visible);
+        mini.inert = visible;
+    }, { threshold: 0.35 }).observe($('deck'));
+
+    /* ---------- 音量 ---------- */
+    const vol = $('vol');
+    const syncVol = () => { vol.style.setProperty('--v', vol.value + '%'); vol.setAttribute('aria-valuetext', vol.value + '%'); };
+    vol.value = Math.round((SE.volume ?? 0.9) * 100);
+    syncVol();
+    vol.addEventListener('input', () => { SE.setVolume(vol.value / 100); syncVol(); });
+
+    /* ---------- 进度：完整播放器的波形条 + 迷你条 ---------- */
+    let dragging = false, dragFrac = 0;
+    function attachSeek(el, target) {
+        const frac = (e) => { const r = target.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); };
+        el.addEventListener('pointerdown', (e) => {
+            dragging = true; dragFrac = frac(e);
+            el.setPointerCapture(e.pointerId);
+            document.body.classList.add('dragging');
+        });
+        el.addEventListener('pointermove', (e) => { if (dragging) dragFrac = frac(e); });
+        const end = () => {
+            if (!dragging) return;
+            dragging = false;
+            document.body.classList.remove('dragging');
+            SE.seek(dragFrac * SE.position().duration);
+        };
+        el.addEventListener('pointerup', end);
+        el.addEventListener('pointercancel', end);
+    }
+    attachSeek($('seek'), $('wave'));
+    attachSeek($('miniBar'), $('miniBar'));
+    $('seek').addEventListener('keydown', (e) => {
+        const { time, duration } = SE.position();
+        const map = { ArrowRight: 5, ArrowUp: 5, ArrowLeft: -5, ArrowDown: -5, PageUp: 15, PageDown: -15 };
+        let t = null;
+        if (e.key in map) t = time + map[e.key];
+        else if (e.key === 'Home') t = 0;
+        else if (e.key === 'End') t = duration - 1;
+        if (t === null) return;
+        e.preventDefault();
+        SE.seek(t);
+    });
+
+    /* ---------- 频谱格 ---------- */
+    const BARS = 16;
+    const specEls = [];
+    for (let i = 0; i < BARS; i++) { const d = document.createElement('i'); $('spec').appendChild(d); specEls.push(d); }
+
+    /* ---------- 主循环 ---------- */
+    const reelL = $('reelL'), reelR = $('reelR');
+    const hubL = reelL.querySelector('.hub'), hubR = reelR.querySelector('.hub');
+    let angL = 0, angR = 0, last = performance.now(), lastMeter = 0, lastWaveP = -1, lastText = 0;
+
+    function frame(now) {
+        requestAnimationFrame(frame);
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        const pos = SE.position();
+        const p = dragging ? dragFrac : pos.duration ? pos.time / pos.duration : 0;
+
+        const tL = 0.82 - 0.42 * p, tR = 0.2 + 0.42 * p;
+        reelL.style.setProperty('--t', tL.toFixed(3));
+        reelR.style.setProperty('--t', tR.toFixed(3));
+        if (SE.playing && !calm) {
+            angL += dt * 260 / tL; angR += dt * 260 / tR;
+            hubL.style.transform = 'rotate(' + angL + 'deg)';
+            hubR.style.transform = 'rotate(' + angR + 'deg)';
+            $('miniDisc').style.transform = 'rotate(' + angR * 0.6 + 'deg)';
+        }
+
+        // 波形只在进度变化超过半根柱子时重绘
+        if (Math.abs(p - lastWaveP) > 0.002) { drawWave(p); lastWaveP = p; }
+        $('head').style.left = (p * 100).toFixed(2) + '%';
+        $('miniFill').style.width = (p * 100).toFixed(2) + '%';
+
+        // 文字类 UI 每 250ms 更新一次即可
+        if (now - lastText > 250 || dragging) {
+            lastText = now;
+            const shown = dragging ? p * pos.duration : pos.time;
+            const tt = fmt(shown) + ' / ' + fmt(pos.duration);
+            $('time').textContent = tt;
+            $('miniTime').textContent = (SE.playing ? 'Playing · ' : 'Original song · ') + tt;
+            const seekEl = $('seek');
+            seekEl.setAttribute('aria-valuemax', String(Math.round(pos.duration)));
+            seekEl.setAttribute('aria-valuenow', String(Math.round(shown)));
+            seekEl.setAttribute('aria-valuetext', fmt(shown) + ' of ' + fmt(pos.duration));
+            const ly = SE.lyric();
+            const txt = ly.index >= 0 ? ly.text : 'Lyrics coming soon.';
+            if ($('lyric').textContent !== txt) $('lyric').textContent = txt;
+        }
+
+        if (calm && now - lastMeter < 200) return;
+        lastMeter = now;
+        const spec = SE.spectrum();
+        for (let c = 0; c < BARS; c++) {
+            let v;
+            if (SE.playing) {
+                const lo = Math.floor(Math.pow(c / BARS, 2.2) * 420) + 2;
+                const hi = Math.floor(Math.pow((c + 1) / BARS, 2.2) * 420) + 3;
+                let s = 0;
+                for (let k = lo; k < hi; k++) s += spec[k];
+                v = s / ((hi - lo) * 255) * 1.15;
+            } else {
+                v = calm ? 0.08 : SE.pulse(now) * 1.6 * (0.6 + 0.4 * Math.sin(c * 0.8 + now / 600));
+            }
+            specEls[c].style.transform = 'scaleY(' + (0.09 + Math.max(0, Math.min(1, v)) * 0.91).toFixed(3) + ')';
+        }
+    }
+    requestAnimationFrame(frame);
+})();
+</script>
 </body>
 </html>
