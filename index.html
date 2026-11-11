@@ -898,6 +898,7 @@ body.calm .btn, body.calm .mini { transition: none; }
     }
 
     /* ---------- 波形进度条 ---------- */
+    let lastWaveP = -1;   // 必须在 renderTrack() 第一次调用之前声明
     const wave = $('wave'), wctx = wave.getContext('2d');
     const css = getComputedStyle(document.documentElement);
     const C = { moss: css.getPropertyValue('--moss').trim(), sage: css.getPropertyValue('--sage').trim(), paper: css.getPropertyValue('--paper').trim() };
@@ -1037,7 +1038,7 @@ body.calm .btn, body.calm .mini { transition: none; }
     /* ---------- 主循环 ---------- */
     const reelL = $('reelL'), reelR = $('reelR');
     const hubL = reelL.querySelector('.hub'), hubR = reelR.querySelector('.hub');
-    let angL = 0, angR = 0, last = performance.now(), lastMeter = 0, lastWaveP = -1, lastText = 0;
+    let angL = 0, angR = 0, last = performance.now(), lastMeter = 0, lastText = 0;
 
     function frame(now) {
         requestAnimationFrame(frame);
