@@ -398,6 +398,15 @@
     // 示范歌词：每 2 小节一句
     function lyric() {
         const tr = tracks[current];
+        // 真实曲目：按 lrc 时间轴找当前句；next 为下一句非空歌词
+        if (tr.lrc && tr.lrc.length) {
+            const t = position().time;
+            let idx = -1;
+            for (let i = 0; i < tr.lrc.length && tr.lrc[i][0] <= t; i++) idx = i;
+            let next = '';
+            for (let i = idx + 1; i < tr.lrc.length; i++) if (tr.lrc[i][1]) { next = tr.lrc[i][1]; break; }
+            return { index: idx, text: idx >= 0 ? tr.lrc[idx][1] : '', next, lines: tr.lrc.map((l) => l[1]) };
+        }
         if (!tr.lyrics || !tr.lyrics.length || tr.type !== 'synth') return { index: -1, text: '', lines: tr.lyrics || [] };
         const barSec = (60 / tr.bpm) * 4;
         const idx = Math.floor(position().time / (barSec * 2)) % tr.lyrics.length;

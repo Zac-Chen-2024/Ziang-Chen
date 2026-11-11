@@ -389,6 +389,7 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 .spec { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; height: 72px; align-items: end; }
 .spec i { display: block; height: 72px; background: var(--leaf); border: 2px solid var(--ink); transform-origin: bottom; transform: scaleY(.09); }
 .lyric { margin-top: 12px; font: 600 15px/1.4 var(--body); }
+.lyric .next { display: block; margin-top: 4px; font: 500 13px/1.35 var(--body); color: var(--moss); opacity: .8; }
 .lyric small { display: block; font: 700 11px/1.3 var(--mono); color: var(--moss); text-transform: uppercase; letter-spacing: .06em; }
 
 /* ---------- 联系 ---------- */
@@ -664,7 +665,7 @@ body.calm .btn, body.calm .mini { transition: none; }
                 </div>
                 <div class="card meters">
                     <div class="spec" id="spec" aria-hidden="true"></div>
-                    <p class="lyric"><small>Lyrics</small><span id="lyric">Lyrics coming soon.</span></p>
+                    <p class="lyric" aria-live="off"><small>Lyrics</small><span id="lyric">♪</span><span class="next" id="lyricNext"></span></p>
                 </div>
             </div>
         </div>
@@ -1063,7 +1064,7 @@ body.calm .btn, body.calm .mini { transition: none; }
         $('miniFill').style.width = (p * 100).toFixed(2) + '%';
 
         // 文字类 UI 每 250ms 更新一次即可
-        if (now - lastText > 250 || dragging) {
+        if (now - lastText > 100 || dragging) {
             lastText = now;
             const shown = dragging ? p * pos.duration : pos.time;
             const tt = fmt(shown) + ' / ' + fmt(pos.duration);
@@ -1074,8 +1075,11 @@ body.calm .btn, body.calm .mini { transition: none; }
             seekEl.setAttribute('aria-valuenow', String(Math.round(shown)));
             seekEl.setAttribute('aria-valuetext', fmt(shown) + ' of ' + fmt(pos.duration));
             const ly = SE.lyric();
-            const txt = ly.index >= 0 ? ly.text : 'Lyrics coming soon.';
+            const hasLrc = !!(SE.track.lrc && SE.track.lrc.length);
+            const txt = hasLrc ? (ly.text || '♪') : 'Lyrics coming soon.';
+            const nxt = hasLrc && ly.next ? ly.next : '';
             if ($('lyric').textContent !== txt) $('lyric').textContent = txt;
+            if ($('lyricNext').textContent !== nxt) $('lyricNext').textContent = nxt;
         }
 
         if (calm && now - lastMeter < 200) return;
