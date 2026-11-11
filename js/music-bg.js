@@ -2,6 +2,8 @@
    MusicBackdrop：播放音乐时的页面背景
    - 底层：圆点均衡器（连续亮度、快起慢落、邻列平滑、每列归一化、底噪门限），
      叠加一道横向流动的波，亮点颜色在三种绿之间缓慢漂移，副歌时浪尖带一点杏色
+   - 部分歌曲有专属场景：Even Now → 布鲁克林大桥（缆索流光、副歌烟花、水面倒影）；
+     Say Less → 海浪（副歌时海平面上涨）。其余歌曲只用均衡器
    - 上层：提词器式歌词（逐字点亮，整列平滑上移）
    - 只在播放时运行；暂停后回到静态点阵；系统“减少动态效果”时完全不启用
    ========================================================================== */
@@ -23,6 +25,7 @@
     const BG = [217, 236, 220], BG_WARM = [234, 230, 207];
     const GAP = 22, HOP_MS = 33;
 
+    const FOREST = '#11422c', MOSS = '#236b3f', LEAF = '#429c5a', APRICOT_HEX = '#f4a254', PAPER = '#f3f8ee';
     let W = 0, H = 0, DPR = 1, cols = 0, rows = 0;
     let colVal = [], colMax = [], colColor = [];
     function resize() {
@@ -32,7 +35,93 @@
         g.setTransform(DPR, 0, 0, DPR, 0, 0);
         cols = Math.ceil(W / GAP) + 1; rows = Math.ceil(H / GAP) + 1;
         colVal = new Array(cols).fill(0); colMax = new Array(cols).fill(0.25); colColor = new Array(cols);
+        bridge = null;
         idleDrawn = false;
+    }
+
+    /* ---------- Even Now：布鲁克林大桥（静态层与倒影层各预渲染一次） ---------- */
+    let bridge = null, bursts = [], lastBurst = 0;
+    function mkCanvas() {
+        const c = document.createElement('canvas'); c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
+        const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0); return [c, x];
+    }
+    function buildBridge() {
+        const SC = window.ZIANG_SCENES;
+        if (!SC || !SC.bridge) return null;
+        const [RW, , RB] = SC.ref;
+        const top = Math.min(...SC.bridge.map((d) => d[1]));
+        const k = Math.min(W / RW, (H * 0.66) / (RB - top));
+        const ox = (W - RW * k) / 2, base = H * 0.74;
+        const pts = SC.bridge.map((d) => [ox + d[0] * k, base - (RB - d[1]) * k, Math.max(0.6, d[2] * k), d[3]]);
+        const colTop = new Array(cols).fill(base);
+        pts.forEach((p) => { const c = Math.floor(p[0] / GAP); if (c >= 0 && c < cols) colTop[c] = Math.min(colTop[c], p[1] - 10); });
+        const [sc, sx] = mkCanvas(), [rc, rx] = mkCanvas();
+        pts.forEach((p) => { sx.fillStyle = FOREST; sx.beginPath(); sx.arc(p[0], p[1], p[2], 0, 6.2832); sx.fill(); });
+        sx.fillStyle = FOREST; sx.fillRect(0, base + 1, W, 2);
+        pts.forEach((p, i) => {
+            const d = base - p[1];
+            if (p[3] === 2 || i % 2 || d > 240 * k) return;
+            rx.globalAlpha = Math.max(0, 0.4 - d / (240 * k)); rx.fillStyle = MOSS;
+            rx.beginPath(); rx.arc(p[0], base + d + 4, p[2] * 0.7, 0, 6.2832); rx.fill();
+        });
+        return { base, colTop, cable: pts.filter((p) => p[3] === 2), static: sc, refl: rc };
+    }
+    function drawBridge(t, now, amt, b) {
+        if (!bridge) bridge = buildBridge();
+        if (!bridge) return;
+        g.globalAlpha = amt;
+        const sw = bridge.refl.width / W, wob = 1.5 + b.bass * 6 * amt;
+        for (let y = bridge.base; y < H; y += 6) g.drawImage(bridge.refl, 0, y * sw, bridge.refl.width, 6 * sw, Math.sin(y * 0.07 + t * 2.4) * wob, y, W, 6);
+        g.drawImage(bridge.static, 0, 0, W, H);
+        // 缆索灯串：亮光沿缆索流动，亮度跟着响度
+        const lv = b.level * amt;
+        g.fillStyle = APRICOT_HEX;
+        for (const p of bridge.cable) {
+            const glow = Math.max(0, Math.sin(p[0] * 0.02 - t * 3)) * (0.25 + 1.4 * lv) * amt;
+            if (glow < 0.05) continue;
+            g.globalAlpha = Math.min(1, glow);
+            g.beginPath(); g.arc(p[0], p[1], p[2] * 1.2, 0, 6.2832); g.fill();
+        }
+        // 副歌强拍的点阵烟花：1.6s 内扩散、淡出（只做透明度渐变，不闪）
+        bursts = bursts.filter((bu) => now - bu.t < 1600);
+        for (const bu of bursts) {
+            const kk = (now - bu.t) / 1600, rad = 18 + kk * 110, fade = (1 - kk) * amt;
+            g.fillStyle = bu.hue;
+            for (let a = 0; a < 28; a++) {
+                const ang = a / 28 * 6.2832;
+                for (let s2 = 0; s2 < 3; s2++) {
+                    const rr = rad * (0.55 + s2 * 0.22);
+                    g.globalAlpha = fade * (0.9 - s2 * 0.25);
+                    g.beginPath(); g.arc(bu.x + Math.cos(ang) * rr, bu.y + Math.sin(ang) * rr + kk * kk * 30, 2.4 - s2 * 0.5, 0, 6.2832); g.fill();
+                }
+            }
+        }
+        g.globalAlpha = 1;
+    }
+    SE.on('beat', () => {
+        const now = performance.now();
+        if (SE.track.id === 'even-now' && sectionE > 0.35 && now - lastBurst > 1400) {
+            lastBurst = now;
+            bursts.push({ x: W * (0.12 + Math.random() * 0.76), y: H * (0.1 + Math.random() * 0.2), t: now, hue: Math.random() < 0.5 ? APRICOT_HEX : PAPER });
+            if (bursts.length > 4) bursts.shift();
+        }
+    });
+
+    /* ---------- Say Less：海浪（6 条正弦线，低音推高浪头，副歌时海平面上涨） ---------- */
+    function drawSea(now, amt, b) {
+        const level = H * (0.66 - 0.12 * sectionE * amt);
+        for (let i = 0; i < 6; i++) {
+            const y = level + i * 26, amp = 6 + i * 2 + b.bass * 22 * amt;
+            const k = 0.012 - i * 0.0012, sp = 0.0012 - i * 0.00012;
+            g.globalAlpha = (1 - i * 0.12) * amt; g.lineWidth = i === 0 ? 3 : 2; g.strokeStyle = i === 0 ? MOSS : LEAF;
+            g.beginPath();
+            for (let x = -10; x <= W + 10; x += 8) {
+                const yy = y + Math.sin(x * k + now * sp + i) * amp + Math.sin(x * k * 2.3 + now * sp * 1.7) * amp * 0.3;
+                x < 0 ? g.moveTo(x, yy) : g.lineTo(x, yy);
+            }
+            g.stroke();
+        }
+        g.globalAlpha = 1;
     }
 
     function bandValues(n) {
@@ -56,6 +145,9 @@
         const t = now / 1000;
         const amt = playAmt;
         const b = SE.bands();
+        const id = SE.track.id;
+        const isBridge = id === 'even-now' && amt > 0.01, isSea = id === 'say-less';
+        if (isBridge && !bridge) bridge = buildBridge();
         // 背景底色：副歌时微微变暖
         g.fillStyle = rgb(mix(BG, BG_WARM, Math.min(0.6, sectionE * amt)));
         g.fillRect(0, 0, W, H);
@@ -65,7 +157,7 @@
         for (let c = 0; c < cols; c++) {
             const v = raw ? raw[c] : 0;
             colMax[c] = Math.max(colMax[c] * 0.996, v, 0.12);
-            norm[c] = Math.max(0, (v / colMax[c] - 0.12) / 0.88) * amt;
+            norm[c] = Math.max(0, (v / colMax[c] - 0.12) / 0.88) * amt * (isSea ? 0 : isBridge ? 0.6 : 1);
         }
         let sm = norm;
         for (let pass = 0; pass < 2; pass++) {
@@ -87,6 +179,7 @@
             const fromBottom = 1 - r / rows;
             for (let c = 0; c < cols; c++) {
                 const x0 = c * GAP + 11, y0 = r * GAP + 11;
+                if (isBridge && bridge && amt > 0.5 && y0 > bridge.colTop[c]) continue;   // 大桥下方不画天空均衡器
                 // 横向传播的波：点阵整体起伏，近底部更明显
                 const wave = Math.sin(x0 * 0.011 - t * 1.3 + r * 0.05) * swell * (0.35 + 0.65 * (1 - fromBottom)) * amt;
                 // 浪峰：顶部边缘再叠一道流动的波
@@ -109,6 +202,8 @@
             }
         }
         g.globalAlpha = 1;
+        if (isBridge) drawBridge(t, now, amt, b);
+        else if (isSea && amt > 0.01) drawSea(now, amt, b);
     }
 
     /* ---------- 提词器歌词 ---------- */
@@ -166,7 +261,7 @@
         else if (!idleDrawn) { playAmt = 0; draw(now); idleDrawn = true; }
     }
 
-    SE.on('track', () => { built = ''; sectionE = 0; levelSlow = 0; levelMax = 0.2; });
+    SE.on('track', () => { built = ''; sectionE = 0; levelSlow = 0; levelMax = 0.2; bursts = []; });
     window.addEventListener('resize', resize);
     resize();
     requestAnimationFrame(frame);
