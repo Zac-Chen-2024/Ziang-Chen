@@ -47,6 +47,39 @@ body {
     padding-bottom: 120px;
 }
 body.dragging { user-select: none; -webkit-user-select: none; }
+
+/* ---------- 播放时的背景：画布接管点阵；歌词层在画布之上、内容之下 ---------- */
+#bgfx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: none; pointer-events: none; }
+body.fx { background-image: none; }
+body.fx #bgfx { display: block; }
+#main, footer { position: relative; z-index: 1; }
+.bg-lyr {
+    position: fixed; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease;
+    left: max(24px, env(safe-area-inset-left, 0px)); right: 24px;
+    bottom: calc(112px + env(safe-area-inset-bottom, 0px)); height: 32vh; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 70%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 70%, transparent 100%);
+}
+/* 播放时出现；滚到完整磁带机时让位（那里已有歌词） */
+body.fx-playing:not(.deck-in) .bg-lyr { opacity: 1; }
+.bg-lyr-track { transition: transform .75s cubic-bezier(.22, 1, .36, 1); will-change: transform; }
+.bg-lyr .ln {
+    max-width: min(980px, 92vw); margin: 0 0 .32em;
+    font: 800 clamp(24px, 4.2vw, 58px)/1.08 var(--body); letter-spacing: -0.02em;
+    color: var(--forest); opacity: .14; filter: blur(1.4px); transform: scale(.88); transform-origin: left center;
+    transition: opacity .5s ease, filter .5s ease, transform .75s cubic-bezier(.22, 1, .36, 1);
+}
+.bg-lyr .ln.near { opacity: .32; filter: blur(.6px); transform: scale(.92); }
+.bg-lyr .ln.cur { opacity: .9; filter: none; transform: scale(1); }
+.bg-lyr .ln .w { opacity: .3; transition: opacity .16s linear; }
+.bg-lyr .ln.cur .w.on, .bg-lyr .ln.past .w { opacity: 1; }
+/* 播放时首屏文字背后垫一层纸色，保证对比度 */
+.hero-main { isolation: isolate; }
+.hero-main::before {
+    content: ""; position: absolute; inset: -16px -18px; z-index: -1; pointer-events: none;
+    background: rgba(243, 248, 238, .9); opacity: 0; transition: opacity .5s ease;
+}
+body.fx-playing .hero-main::before { opacity: 1; }
 button, input { font: inherit; color: inherit; touch-action: manipulation; }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 a { color: var(--moss); text-underline-offset: 3px; text-decoration-thickness: 2px; }
@@ -481,6 +514,8 @@ body.calm .btn, body.calm .mini { transition: none; }
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<canvas id="bgfx" aria-hidden="true"></canvas>
+<div class="bg-lyr" id="bgLyr" aria-hidden="true"><div class="bg-lyr-track" id="bgLyrTrack"></div></div>
 
 <nav class="nav" aria-label="Sections">
     <div class="wrap">
@@ -988,6 +1023,7 @@ body.calm .btn, body.calm .mini { transition: none; }
     new IntersectionObserver((entries) => {
         const visible = entries[0].isIntersecting;
         mini.classList.toggle('away', visible);
+        document.body.classList.toggle('deck-in', visible);
         mini.inert = visible;
     }, { threshold: 0.35 }).observe($('deck'));
 
@@ -1102,5 +1138,6 @@ body.calm .btn, body.calm .mini { transition: none; }
     requestAnimationFrame(frame);
 })();
 </script>
+<script src="js/music-bg.js"></script>
 </body>
 </html>
