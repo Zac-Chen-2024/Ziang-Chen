@@ -112,6 +112,10 @@ a:hover { color: var(--ink); }
 .btn.dark { background: var(--forest); color: var(--paper); }
 .btn.dark:hover { color: var(--paper); }
 .btn.sq { padding: 0; width: 48px; font-size: 18px; }
+/* 图标统一用内联 SVG（不用 emoji / 字符），随 currentColor 着色 */
+.i { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
+.i.s { fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: square; stroke-linejoin: miter; }
+
 .btn[aria-pressed="true"] { background: var(--forest); color: var(--paper); transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
 
 /* ---------- 顶栏：粘性导航，当前分区高亮 ---------- */
@@ -418,7 +422,7 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 .row .len { font: 700 13px/1 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
 .row[aria-current="true"] { background: var(--leaf); }
 .row[aria-current="true"] .n { font-size: 0; }
-.row[aria-current="true"] .n::before { content: "▶"; font-size: 14px; }
+.row[aria-current="true"] .n::before { content: ""; display: block; width: 14px; height: 14px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4v16l13-8z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4v16l13-8z'/%3E%3C/svg%3E") center / contain no-repeat; }
 .row[aria-current="true"] svg rect { fill: var(--forest); }
 
 .meters { margin-top: 18px; padding: 14px 16px; }
@@ -426,6 +430,7 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 .spec i { display: block; height: 72px; background: var(--leaf); border: 2px solid var(--ink); transform-origin: bottom; transform: scaleY(.09); }
 .lyric { margin-top: 12px; font: 600 15px/1.4 var(--body); }
 .lyric .next { display: block; margin-top: 4px; font: 500 13px/1.35 var(--body); color: var(--moss); opacity: .8; }
+#lyric:empty::before { content: ""; display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 18a3 3 0 1 1-2-2.83V5.5l13-2.5v12a3 3 0 1 1-2-2.83V6.9L9 8.6z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 18a3 3 0 1 1-2-2.83V5.5l13-2.5v12a3 3 0 1 1-2-2.83V6.9L9 8.6z'/%3E%3C/svg%3E") center / contain no-repeat; }
 .lyric small { display: block; font: 700 11px/1.3 var(--mono); color: var(--moss); text-transform: uppercase; letter-spacing: .06em; }
 
 /* ---------- 联系 ---------- */
@@ -554,7 +559,7 @@ body.calm .btn, body.calm .mini { transition: none; }
             </p>
             <div class="cta">
                 <a class="btn primary" href="#research">See my research</a>
-                <button class="btn dark" id="heroPlay" type="button">▶ Play my song</button>
+                <button class="btn dark" id="heroPlay" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg> Play my song</button>
                 <a class="btn" href="mailto:ziang.chen@stonybrook.edu">Email me</a>
             </div>
         </div>
@@ -599,11 +604,11 @@ body.calm .btn, body.calm .mini { transition: none; }
                 </div>
                 </div>
                 <div class="scrub">
-                    <button class="btn" id="railPrev" type="button" aria-label="Previous project">←</button>
+                    <button class="btn" id="railPrev" type="button" aria-label="Previous project"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button>
                     <div class="line" id="line" role="slider" tabindex="0" aria-label="Project" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
                         <span class="fill" id="lineFill"></span>
                     </div>
-                    <button class="btn" id="railNext" type="button" aria-label="Next project">→</button>
+                    <button class="btn" id="railNext" type="button" aria-label="Next project"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
                 </div>
             </div>
 
@@ -688,9 +693,9 @@ body.calm .btn, body.calm .mini { transition: none; }
                     <span class="head" id="head"></span>
                 </div>
                 <div class="controls">
-                    <button class="btn sq" id="prev" type="button" aria-label="Previous song">⏮</button>
-                    <button class="btn primary play" id="toggle" type="button" aria-label="Play">▶ Play</button>
-                    <button class="btn sq" id="next" type="button" aria-label="Next song">⏭</button>
+                    <button class="btn sq" id="prev" type="button" aria-label="Previous song"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3v16H5zM20 4v16L9 12z"/></svg></button>
+                    <button class="btn primary play" id="toggle" type="button" aria-label="Play"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg> Play</button>
+                    <button class="btn sq" id="next" type="button" aria-label="Next song"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h3v16h-3zM4 4l11 8-11 8z"/></svg></button>
                     <span class="time" id="time" aria-hidden="true">0:00 / 0:00</span>
                 </div>
                 <div class="controls">
@@ -705,7 +710,7 @@ body.calm .btn, body.calm .mini { transition: none; }
                 </div>
                 <div class="card meters">
                     <div class="spec" id="spec" aria-hidden="true"></div>
-                    <p class="lyric" aria-live="off"><small>Lyrics</small><span id="lyric">♪</span><span class="next" id="lyricNext"></span></p>
+                    <p class="lyric" aria-live="off"><small>Lyrics</small><span id="lyric"></span><span class="next" id="lyricNext"></span></p>
                 </div>
             </div>
         </div>
@@ -724,7 +729,7 @@ body.calm .btn, body.calm .mini { transition: none; }
                 <ul class="elsewhere" aria-label="Elsewhere">
                     <!-- 预留：论文被接收后把这一行换成 <a href="Scholar 链接"> -->
                     <li><span class="soon" aria-disabled="true"><span>Google Scholar</span><small>Coming soon</small></span></li>
-                    <li><a href="https://www.linkedin.com/in/ziang-chen-b36000329/"><span>LinkedIn</span><small>ziang-chen ↗</small></a></li>
+                    <li><a href="https://www.linkedin.com/in/ziang-chen-b36000329/"><span>LinkedIn</span><small>ziang-chen <svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></small></a></li>
                     <!-- 预留：准备好后把这一行换成 <a href="https://github.com/…"> -->
                     <li><span class="soon" aria-disabled="true"><span>GitHub</span><small>Coming soon</small></span></li>
                 </ul>
@@ -740,10 +745,10 @@ body.calm .btn, body.calm .mini { transition: none; }
     <div class="disc" id="miniDisc" aria-hidden="true"></div>
     <div class="info"><b id="miniTitle">—</b><small id="miniTime">Original song · 0:00</small></div>
     <div class="acts">
-        <button class="btn play" id="miniToggle" type="button" aria-label="Play">▶</button>
-        <button class="btn opt next" id="miniNext" type="button" aria-label="Next song">⏭</button>
-        <button class="btn opt" id="miniOpen" type="button" aria-label="Open full player">⤢</button>
-        <button class="btn" id="miniShrink" type="button" aria-label="Minimize player" aria-expanded="true">–</button>
+        <button class="btn play" id="miniToggle" type="button" aria-label="Play"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg></button>
+        <button class="btn opt next" id="miniNext" type="button" aria-label="Next song"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h3v16h-3zM4 4l11 8-11 8z"/></svg></button>
+        <button class="btn opt" id="miniOpen" type="button" aria-label="Open full player"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></button>
+        <button class="btn" id="miniShrink" type="button" aria-label="Minimize player" aria-expanded="true"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
     </div>
     <div class="bar" id="miniBar" aria-hidden="true"><i id="miniFill"></i></div>
 </div>
@@ -753,6 +758,7 @@ body.calm .btn, body.calm .mini { transition: none; }
 <script src="js/tracks.js"></script>
 <script src="js/sound-engine.js"></script>
 <script>
+    const ICON = { play: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>', pause: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>', minus: '<svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>', plus: '<svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>', check: '<svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>' };
 (function () {
     'use strict';
     const SE = window.SoundEngine;
@@ -782,7 +788,7 @@ body.calm .btn, body.calm .mini { transition: none; }
     /* ---------- 复制邮箱 ---------- */
     document.querySelectorAll('[data-copy]').forEach((btn) => {
         btn.addEventListener('click', () => {
-            const done = () => { btn.textContent = 'Copied ✓'; announce('Email copied'); setTimeout(() => { btn.textContent = 'Copy'; }, 1500); };
+            const done = () => { btn.innerHTML = 'Copied ' + ICON.check; announce('Email copied'); setTimeout(() => { btn.textContent = 'Copy'; }, 1500); };
             const select = () => {
                 const code = btn.parentElement.querySelector('code');
                 const r = document.createRange(); r.selectNodeContents(code);
@@ -981,11 +987,11 @@ body.calm .btn, body.calm .mini { transition: none; }
     }
     function renderState() {
         const playing = SE.playing;
-        $('toggle').textContent = playing ? '❚❚ Pause' : '▶ Play';
+        $('toggle').innerHTML = playing ? ICON.pause + ' Pause' : ICON.play + ' Play';
         $('toggle').setAttribute('aria-label', playing ? 'Pause' : 'Play');
-        $('miniToggle').textContent = playing ? '❚❚' : '▶';
+        $('miniToggle').innerHTML = playing ? ICON.pause : ICON.play;
         $('miniToggle').setAttribute('aria-label', playing ? 'Pause' : 'Play');
-        $('heroPlay').textContent = playing ? '❚❚ Pause my song' : '▶ Play my song';
+        $('heroPlay').innerHTML = (playing ? ICON.pause + ' Pause' : ICON.play + ' Play') + ' my song';
         announce((playing ? 'Playing: ' : 'Paused: ') + SE.track.title);
     }
     renderList();
@@ -1019,7 +1025,7 @@ body.calm .btn, body.calm .mini { transition: none; }
     function setSmall(v) {
         small = v;
         mini.classList.toggle('small', v);
-        $('miniShrink').textContent = v ? '+' : '–';
+        $('miniShrink').innerHTML = v ? ICON.plus : ICON.minus;
         $('miniShrink').setAttribute('aria-label', v ? 'Expand player' : 'Minimize player');
         $('miniShrink').setAttribute('aria-expanded', String(!v));
         try { localStorage.setItem('zc-mini-small', v ? '1' : '0'); } catch (e) { /* 忽略 */ }
@@ -1118,7 +1124,7 @@ body.calm .btn, body.calm .mini { transition: none; }
             seekEl.setAttribute('aria-valuetext', fmt(shown) + ' of ' + fmt(pos.duration));
             const ly = SE.lyric();
             const hasLrc = !!(SE.track.lrc && SE.track.lrc.length);
-            const txt = hasLrc ? (ly.text || '♪') : 'Lyrics coming soon.';
+            const txt = hasLrc ? (ly.text || '') : 'Lyrics coming soon.';
             const nxt = hasLrc && ly.next ? ly.next : '';
             if ($('lyric').textContent !== txt) $('lyric').textContent = txt;
             if ($('lyricNext').textContent !== nxt) $('lyricNext').textContent = nxt;
