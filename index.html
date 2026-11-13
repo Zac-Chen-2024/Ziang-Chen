@@ -172,8 +172,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .poster { position: relative; justify-self: end; align-self: start; width: 100%; max-width: 440px; margin-top: 0; }
 .poster figure {
     position: relative; background: var(--paper); border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
-    padding: 12px 12px 0; transform: rotate(1.5deg);
+    padding: 12px 12px 0;
 }
+.tilt { transform: rotate(1.5deg); }
+.tilt .badge.b2 { transform: rotate(1.5deg); }
 .poster .photo { aspect-ratio: 4 / 5; overflow: hidden; border: var(--b); background: var(--pine); }
 .poster img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
 .poster figcaption { justify-content: space-between; gap: 8px; padding: 12px 2px 14px; }
@@ -184,7 +186,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 .badge small { display: block; font: 700 11px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
 .badge.b1 { left: -18px; top: 26px; background: var(--leaf); transform: rotate(-4deg); }
-.badge.b2 { right: -14px; bottom: 64px; background: var(--apricot); transform: rotate(3deg); }
+.badge.b2 { right: -18px; bottom: 60px; background: var(--apricot); transform: rotate(3deg); }
 .reach { margin-top: 6px; font: 600 16px/1.4 var(--body); color: var(--moss); }
 .reach a { color: var(--ink); font-weight: 800; text-decoration-color: var(--moss); }
 .mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -194,6 +196,38 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     font: 700 12px/1 var(--mono); box-shadow: 2px 2px 0 var(--ink);
 }
 .copy:active { transform: translate(2px, 2px); box-shadow: none; }
+
+/* Now：照片框下方顺着同一斜度续出的一条，一次只露一条近况，读者用左右按钮或横向滑动自己翻
+   （不自动轮播：移动的文字难读，也不用另做暂停）。横向 scroll-snap 让触控板和手机滑动天然可用 */
+.now {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch;
+    margin-top: 14px; border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
+    background: var(--forest); color: var(--paper);
+}
+.now-tag {
+    display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 12px;
+    background: var(--apricot); color: var(--ink); border-right: 3px solid var(--ink);
+    font: 400 18px/1 var(--display);
+}
+.now-tag small { font: 700 10px/1 var(--mono); letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.now-list {
+    display: flex; list-style: none; min-width: 0; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.now-list::-webkit-scrollbar { display: none; }
+.now-list li {
+    flex: 0 0 100%; scroll-snap-align: start; display: flex; align-items: center; gap: 8px; min-width: 0;
+    min-height: calc(2 * 13px * 1.35 + 16px); padding: 8px 14px; font: 600 13px/1.35 var(--body);
+}
+/* 最多两行；高度固定为两行，翻到短的一条时整条不跳动 */
+.now-list li > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.now-nav { display: flex; align-items: stretch; border-left: 3px solid var(--ink); }
+.now-nav button { width: 40px; border: 0; background: var(--pine); color: var(--paper); display: grid; place-items: center; font-size: 15px; }
+/* 两个按钮之间的竖线 */
+.now-nav button + button { border-left: 3px solid var(--ink); }
+.now-nav button:hover { background: var(--moss); }
+.now-nav button:disabled { color: var(--moss); background: var(--pine); cursor: default; }
+@media (prefers-reduced-motion: no-preference) { .now-list { scroll-behavior: smooth; } }
 
 /* ---------- 分区标题 ---------- */
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin: 72px 0 22px; }
@@ -565,12 +599,38 @@ body.calm .btn, body.calm .mini { transition: none; }
         </div>
 
         <aside class="poster" aria-label="Photo">
+            <div class="tilt">
             <figure>
                 <div class="photo"><img src="assets/images/ziang-platform.jpg" alt="Ziang Chen in a knit hood on a train platform at night" width="1200" height="900" fetchpriority="high"></div>
                 <figcaption class="mail-row"><code>ziang.chen@stonybrook.edu</code><button class="copy" type="button" data-copy="ziang.chen@stonybrook.edu">Copy</button></figcaption>
+                <p class="badge b2"><small>Focus</small>HCI · LLM · Multimodal</p>
             </figure>
+            <section class="now" aria-label="New: recent updates">
+                <p class="now-tag" aria-hidden="true">NEW<small id="nowDate">2026.11</small></p>
+                <ul class="now-list" id="nowList" tabindex="0" aria-label="Recent updates, newest first">
+                    <li data-date="2026.11"><time class="sr-only" datetime="2026-11">November 2026: </time><span>Student Volunteer at UIST 2026, Detroit, MI.</span></li>
+                    <li data-date="2025.11"><time class="sr-only" datetime="2025-11">November 2025: </time><span>Got my driver’s license (NY).</span></li>
+                    <li data-date="2025.05"><time class="sr-only" datetime="2025-05">May 2025: </time><span>Started my PhD in HCI with Prof. Xiaojun Bi.</span></li>
+                    <li data-date="2024.08"><time class="sr-only" datetime="2024-08">August 2024: </time><span>Started at Stony Brook University.</span></li>
+                    <li data-date="2024.06"><time class="sr-only" datetime="2024-06">June 2024: </time><span>Performed at <span lang="zh-CN">青蜓音乐节</span> with MoonMan &amp; <span lang="zh-CN">小巷姑娘</span>.</span></li>
+                    <li data-date="2024.04"><time class="sr-only" datetime="2024-04">April 2024: </time><span>Joined <span lang="zh-CN">小巷姑娘</span> (Band) as lead vocalist.</span></li>
+                    <li data-date="2023.07"><time class="sr-only" datetime="2023-07">July 2023: </time><span>Interned in Shanghai.</span></li>
+                    <li data-date="2023.06"><time class="sr-only" datetime="2023-06">June 2023: </time><span>Performed at <span lang="zh-CN">青蜓音乐节</span> with MoonMan.</span></li>
+                    <li data-date="2023.05"><time class="sr-only" datetime="2023-05">May 2023: </time><span>Seen someone and broken my heart.</span></li>
+                    <li data-date="2022.09"><time class="sr-only" datetime="2022-09">September 2022: </time><span>Became Honorary Band Organizer of LiveBand2022.</span></li>
+                    <li data-date="2022.04"><time class="sr-only" datetime="2022-04">April 2022: </time><span>Reached Master rank in TFT.</span></li>
+                    <li data-date="2022.02"><time class="sr-only" datetime="2022-02">February 2022: </time><span>Got my driver’s license (China).</span></li>
+                    <li data-date="2021.05"><time class="sr-only" datetime="2021-05">May 2021: </time><span>Performed at <span lang="zh-CN">青蜓音乐节</span> with MoonMan.</span></li>
+                    <li data-date="2020.11"><time class="sr-only" datetime="2020-11">November 2020: </time><span>Performed at <span lang="zh-CN">青蜓音乐节</span> with MoonMan.</span></li>
+                    <li data-date="2020.09"><time class="sr-only" datetime="2020-09">September 2020: </time><span>Joined MoonMan (Band) as lead vocalist.</span></li>
+                </ul>
+                <div class="now-nav">
+                    <button type="button" id="nowPrev" aria-label="Previous item"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+                    <button type="button" id="nowNext" aria-label="Next item"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+                </div>
+            </section>
+            </div>
             <p class="badge b1"><small>PhD candidate</small>Stony Brook CS</p>
-            <p class="badge b2"><small>Focus</small>HCI · LLM · Multimodal</p>
         </aside>
     </header>
 
@@ -784,6 +844,29 @@ body.calm .btn, body.calm .mini { transition: none; }
         exp.querySelectorAll('.modes button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.view === v)));
         announce(v === 'aca' ? 'Experience: academic only' : v === 'art' ? 'Experience: art only' : 'Experience: academic and art');
     }));
+
+    /* ---------- Now：左右翻看（按钮与滑动共用同一个横向滚动容器） ---------- */
+    (function now() {
+        // NEW 标签下的年月跟着当前这条变
+        const list = $('nowList');
+        const n = list.children.length;
+        const idx = () => Math.round(list.scrollLeft / Math.max(1, list.clientWidth));
+        const sync = () => {
+            const i = idx();
+            const li = list.children[i];
+            if (li) $('nowDate').textContent = li.dataset.date;
+            $('nowPrev').disabled = i <= 0;
+            $('nowNext').disabled = i >= n - 1;
+        };
+        const go = (d) => list.scrollTo({ left: (idx() + d) * list.clientWidth });
+        $('nowPrev').addEventListener('click', () => go(-1));
+        $('nowNext').addEventListener('click', () => go(1));
+        list.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); go(e.key === 'ArrowLeft' ? -1 : 1); }
+        });
+        list.addEventListener('scroll', sync, { passive: true });
+        sync();
+    })();
 
     /* ---------- 复制邮箱 ---------- */
     document.querySelectorAll('[data-copy]').forEach((btn) => {
