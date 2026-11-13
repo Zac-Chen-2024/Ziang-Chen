@@ -15,38 +15,45 @@
 <meta property="og:url" content="https://ziangchen.work/">
 <meta property="og:type" content="profile">
 <link rel="canonical" href="https://ziangchen.work/">
-<!-- 搜索引擎用的人物结构化数据（schema.org Person） -->
+<!-- 搜索引擎用的结构化数据：ProfilePage 包着 Person（Google 只把 ProfilePage 算作富媒体结果类型） -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://ziangchen.work/#person",
-  "name": "Ziang Chen",
+  "@type": "ProfilePage",
+  "@id": "https://ziangchen.work/",
   "url": "https://ziangchen.work/",
-  "image": "https://ziangchen.work/assets/images/ziang-platform.jpg",
-  "email": "mailto:ziang.chen@stonybrook.edu",
-  "description": "PhD candidate in Computer Science at Stony Brook University working on multimodal input for human–AI interaction; also a music producer and singer.",
-  "jobTitle": "PhD Candidate in Computer Science",
-  "affiliation": {
-    "@type": "CollegeOrUniversity",
-    "name": "Stony Brook University",
-    "url": "https://www.stonybrook.edu/"
-  },
-  "alumniOf": [
-    {
+  "name": "Ziang Chen · HCI Researcher",
+  "dateModified": "2026-11-13",
+  "mainEntity": {
+    "@type": "Person",
+    "@id": "https://ziangchen.work/#person",
+    "name": "Ziang Chen",
+    "url": "https://ziangchen.work/",
+    "image": "https://ziangchen.work/assets/images/ziang-platform.jpg",
+    "email": "mailto:ziang.chen@stonybrook.edu",
+    "description": "PhD candidate in Computer Science at Stony Brook University working on multimodal input for human–AI interaction; also a music producer and singer.",
+    "jobTitle": "PhD Candidate in Computer Science",
+    "affiliation": {
       "@type": "CollegeOrUniversity",
-      "name": "Northeastern University (China)"
-    }
-  ],
-  "knowsAbout": [
-    "Human-Computer Interaction",
-    "Large Language Models",
-    "Multimodal Input",
-    "Human-AI Interaction"
-  ],
-  "sameAs": [
-    "https://www.linkedin.com/in/ziang-chen-b36000329/"
-  ]
+      "name": "Stony Brook University",
+      "url": "https://www.stonybrook.edu/"
+    },
+    "alumniOf": [
+      {
+        "@type": "CollegeOrUniversity",
+        "name": "Northeastern University (China)"
+      }
+    ],
+    "knowsAbout": [
+      "Human-Computer Interaction",
+      "Large Language Models",
+      "Multimodal Input",
+      "Human-AI Interaction"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/in/ziang-chen-b36000329/"
+    ]
+  }
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
