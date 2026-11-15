@@ -424,8 +424,11 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 
 /* ---------- 音乐：完整播放器 ---------- */
 .deck { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; align-items: stretch; }
-.deck-side { position: relative; display: flex; flex-direction: column; min-width: 0; }
-.deck-side .meters { flex: 1; display: flex; flex-direction: column; }
+/* 右栏不参与决定行高（contain: size）：整行高度只由左边播放器决定，右栏再拉伸填满。
+   曲目表占剩余高度、在内部滚动，加歌不会把播放器撑长 */
+.deck-side { position: relative; display: flex; flex-direction: column; min-width: 0; contain: size; }
+.deck-side .tracks { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.deck-side .meters { flex: none; display: flex; flex-direction: column; }
 .deck-side .lyric { margin-top: auto; padding-top: 12px; }
 .player { padding: 18px; }
 .cassette {
@@ -487,12 +490,23 @@ body.calm .rail-box::before, body.calm .rail-box::after { transition: none; }
 .tracks .hd { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px; border-bottom: var(--b); background: var(--mist); }
 .tracks .hd b { font: 400 20px/1 var(--display); text-transform: uppercase; }
 .tracks .hd small { font: 700 12px/1 var(--mono); }
-.tracks ol { list-style: none; }
+.tracks ol {
+    list-style: none; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior-y: auto;
+    scrollbar-width: thin; scrollbar-color: var(--forest) var(--mist);
+}
+.tracks .album {
+    position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: baseline;
+    padding: 8px 16px 7px; background: var(--forest); color: var(--paper); border-bottom: 2px solid var(--ink);
+}
+.tracks .album b { font: 400 15px/1 var(--display); letter-spacing: .04em; }
+.tracks .album small { font: 700 11px/1 var(--mono); color: var(--sage); }
+.tracks ol:focus-visible { outline: 3px solid var(--leaf); outline-offset: -3px; }
 .row {
     width: 100%; display: grid; grid-template-columns: 34px minmax(0, 1fr) 84px 48px; gap: 12px; align-items: center;
     min-height: 60px; padding: 8px 16px; text-align: left; background: var(--paper); border: 0; border-bottom: 2px solid var(--ink);
 }
-.tracks li:last-child .row { border-bottom: 0; }
+.tracks .group:last-child li:last-child .row { border-bottom: 0; }
+.tracks .songs { list-style: none; }
 .row:hover { background: var(--mist); }
 .row .n { font: 700 13px/1 var(--mono); font-variant-numeric: tabular-nums; }
 .row b { font: 700 16px/1.25 var(--body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -573,6 +587,9 @@ body.calm .btn, body.calm .mini { transition: none; }
 
 @media (max-width: 860px) {
     .hero, .cols, .deck, .contact { grid-template-columns: minmax(0, 1fr); }
+    /* 单栏时没有左栏可参照：曲目表固定露出五行半 */
+    .deck-side { contain: none; }
+    .tracks ol { flex: none; max-height: 336px; }
     .pcard { flex-basis: min(66%, 260px); }
     .exp { position: static; }
     .exp ol { flex: none; overflow: visible; }
@@ -812,7 +829,7 @@ body.calm .btn, body.calm .mini { transition: none; }
             <div class="deck-side">
                 <div class="card tracks">
                     <div class="hd"><b>Tracklist</b><small id="count">5 songs</small></div>
-                    <ol id="list"></ol>
+                    <ol id="list" tabindex="0" aria-label="Songs"></ol>
                 </div>
                 <div class="card meters">
                     <div class="spec" id="spec" aria-hidden="true"></div>
@@ -1051,27 +1068,52 @@ body.calm .btn, body.calm .mini { transition: none; }
     function renderList() {
         const list = $('list');
         list.textContent = '';
+        // 按专辑分组：每张专辑一个 li.group（吸顶专辑名 + 自己的曲目 ol），
+        // 吸顶只在本组内生效，滚到下一张时会被新的专辑名顶走；曲号在专辑内重新从 01 数
+        let album = null, no = 0, songs = null;
         SE.tracks.forEach((t, i) => {
+            if (t.album !== album) {
+                album = t.album; no = 0;
+                const g = document.createElement('li');
+                g.className = 'group';
+                g.innerHTML = '<div class="album"><b></b><small></small></div><ol class="songs"></ol>';
+                g.querySelector('b').textContent = album || 'Singles';
+                const n = SE.tracks.filter((x) => x.album === album).length;
+                g.querySelector('small').textContent = n + (n === 1 ? ' song' : ' songs');
+                g.setAttribute('aria-label', (album || 'Singles') + ', ' + n + (n === 1 ? ' song' : ' songs'));
+                list.appendChild(g);
+                songs = g.querySelector('.songs');
+            }
+            no += 1;
             const li = document.createElement('li');
             const b = document.createElement('button');
             b.type = 'button';
             b.className = 'row';
-            b.innerHTML = '<span class="n">' + pad(i + 1) + '</span><b></b><span class="w"></span><span class="len"></span>';
+            b.innerHTML = '<span class="n">' + pad(no) + '</span><b></b><span class="w"></span><span class="len"></span>';
             b.querySelector('b').textContent = t.title;
             b.querySelector('.w').appendChild(waveSvg(t.peaks, 28));
             b.querySelector('.len').textContent = t.duration ? fmt(t.duration) : '—';
-            b.setAttribute('aria-label', 'Play ' + t.title + (t.duration ? ', ' + fmt(t.duration) : ''));
+            b.setAttribute('aria-label', 'Play ' + t.title + (t.album ? ', from ' + t.album : '') + (t.duration ? ', ' + fmt(t.duration) : ''));
             b.addEventListener('click', () => { if (i === SE.current) SE.toggle(); else SE.play(i); });
             li.appendChild(b);
-            list.appendChild(li);
+            songs.appendChild(li);
         });
-        $('count').textContent = SE.tracks.length + ' songs';
+        const albums = new Set(SE.tracks.map((t) => t.album)).size;
+        $('count').textContent = (albums > 1 ? albums + ' albums · ' : '') + SE.tracks.length + ' songs';
         markCurrent();
     }
     function markCurrent() {
         $('list').querySelectorAll('.row').forEach((el, k) => {
             if (k === SE.current) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current');
         });
+        // 当前曲目不在可见范围时，只滚动曲目表本身（不带动整页）
+        const list = $('list'), row = list.querySelectorAll('.row')[SE.current], cur = row && row.parentElement;
+        if (cur && list.scrollHeight > list.clientHeight) {
+            const head = list.querySelector('.album'), hh = head ? head.offsetHeight : 0;   // 吸顶专辑名会挡住顶部
+            const top = cur.offsetTop - list.offsetTop, bot = top + cur.offsetHeight;
+            if (top - hh < list.scrollTop) list.scrollTop = top - hh;
+            else if (bot > list.scrollTop + list.clientHeight) list.scrollTop = bot - list.clientHeight;
+        }
     }
 
     /* ---------- 波形进度条 ---------- */
