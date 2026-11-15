@@ -244,7 +244,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* Now：照片框下方顺着同一斜度续出的一条，一次只露一条近况，读者用左右按钮或横向滑动自己翻
    （不自动轮播：移动的文字难读，也不用另做暂停）。横向 scroll-snap 让触控板和手机滑动天然可用 */
-.now {
+/* 类名用 .news：.now 已被 Experience 里“进行中”的条目占用（li.now） */
+.news {
     display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch;
     margin-top: 14px; border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
     background: var(--forest); color: var(--paper);
@@ -672,7 +673,7 @@ body.calm .btn, body.calm .mini { transition: none; }
                 <figcaption class="mail-row"><code>ziang.chen@stonybrook.edu</code><button class="copy" type="button" data-copy="ziang.chen@stonybrook.edu">Copy</button></figcaption>
                 <p class="badge b2"><small>Focus</small>HCI · LLM · Multimodal</p>
             </figure>
-            <section class="now" aria-label="New: recent updates">
+            <section class="news" aria-label="New: recent updates">
                 <p class="now-tag" aria-hidden="true">NEW<small id="nowDate">2026.11</small></p>
                 <ul class="now-list" id="nowList" tabindex="0" aria-label="Recent updates, newest first">
                     <li data-date="2026.11"><time class="sr-only" datetime="2026-11">November 2026: </time><span>Student Volunteer at UIST 2026, Detroit, MI.</span></li>
