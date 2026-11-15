@@ -883,8 +883,9 @@ body.calm .btn, body.calm .mini { transition: none; }
 
 <div class="sr-only" aria-live="polite" id="live"></div>
 
-<script src="js/tracks.js"></script>
-<script src="js/sound-engine.js"></script>
+<!-- ?v= 版本号：改了 js 就更新，避免浏览器拿缓存的旧 js 配新的 html -->
+<script src="js/tracks.js?v=20261115"></script>
+<script src="js/sound-engine.js?v=20261115"></script>
 <script>
     const ICON = { play: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>', pause: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>', minus: '<svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>', plus: '<svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>', check: '<svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>' };
 (function () {
@@ -1328,7 +1329,7 @@ body.calm .btn, body.calm .mini { transition: none; }
     requestAnimationFrame(frame);
 })();
 </script>
-<script src="js/scenes.js"></script>
-<script src="js/music-bg.js"></script>
+<script src="js/scenes.js?v=20261115"></script>
+<script src="js/music-bg.js?v=20261115"></script>
 </body>
 </html>
